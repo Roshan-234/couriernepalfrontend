@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-50 text-gray-800 font-sans;
+}
+
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Form input focus styles */
+input:focus, textarea:focus, select:focus {
+  @apply outline-none ring-2 ring-blue-500;
+}
+
+/* Button styles */
+.btn-primary {
+  @apply bg-blue-900 hover:bg-blue-800 text-white font-medium py-3 px-6 rounded-lg transition;
+}
+
+.btn-secondary {
+  @apply bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-6 rounded-lg transition;
+}
+
+/* Card styles */
+.card {
+  @apply bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition;
+}
