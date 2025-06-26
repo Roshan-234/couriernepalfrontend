@@ -1,60 +1,37 @@
-import Link from 'next/link';
-import { FaEnvelope } from 'react-icons/fa';
+'use client';
 
-const ForgotPasswordPage = () => {
+import { useState } from 'react';
+import api from '@/lib/api';
+
+export default function ForgotPasswordPage() {
+  const [email, setEmail]   = useState('');
+  const [msg, setMsg]       = useState<string|null>(null);
+  const [err, setErr]       = useState<string|null>(null);
+
+  const handle = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMsg(null); setErr(null);
+    try {
+      const { data } = await api.post('/auth/password-reset', { email });
+      setMsg(data.msg);
+    } catch (e: any) {
+      setErr(e.response?.data?.msg || 'Error sending link');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-          Reset your password
-        </h2>
-        <p className="mt-2 text-center text-gray-600">
-          Enter your email to receive a password reset link
-        </p>
-      </div>
-
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className="py-3 pl-10 pr-4 block w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="your@email.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Send Reset Link
-              </button>
-            </div>
-          </form>
-
-          <div className="mt-6 text-center">
-            <Link href="/login" className="text-blue-600 hover:text-blue-500 text-sm">
-              Back to login
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      <h2 className="text-2xl font-bold mb-4">Forgot Password</h2>
+      {msg && <p className="text-green-600">{msg}</p>}
+      {err && <p className="text-red-600">{err}</p>}
+      <form onSubmit={handle} className="space-y-4">
+        <input
+          type="email" placeholder="you@example.com"
+          value={email} onChange={e=>setEmail(e.target.value)}
+          className="w-full p-2 border rounded" required
+        />
+        <button className="w-full bg-blue-600 text-white p-2 rounded">Send Reset Link</button>
+      </form>
+    </>
   );
-};
-
-export default ForgotPasswordPage;
+}

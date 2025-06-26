@@ -1,20 +1,21 @@
-import { useAuth } from '@/contexts/AuthContext';
-import Sidebar from '@/components/dashboard/Sidebar';
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
+import DashboardSidebar from '@/components/dashboard/Sidebar';
+import DashboardHeader from '@/components/dashboard/Header';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuth();
-  
   return (
-    <ProtectedRoute roles={['customer', 'admin', 'agent']}>
-      <div className="flex min-h-screen">
-        <Sidebar role={user?.role} />
-        <div className="flex-1 p-6 bg-gray-50">
-          {children}
+    <ProtectedRoute>
+      <div className="flex min-h-screen bg-gray-100">
+        <DashboardSidebar />
+        <div className="flex-1 flex flex-col">
+          <DashboardHeader />
+          <main className="flex-1 p-6 bg-gray-100">
+            {children}
+          </main>
         </div>
       </div>
     </ProtectedRoute>

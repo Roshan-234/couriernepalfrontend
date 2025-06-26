@@ -1,32 +1,29 @@
-import { useQuery } from 'react-query';
-import api from '@/lib/api';
-// import ShipmentList from '@/components/dashboard/ShipmentList';
-// import Button from '@/components/ui/Button';
-import { useRouter } from 'next/navigation';
+import ShipmentList from '@/components/dashboard/ShipmentList';
 
 export default function ShipmentsPage() {
-  const router = useRouter();
-  const { data: shipments, isLoading } = useQuery('shipments', () =>
-    api.get('/shipments').then(res => res.data)
-  );
+  // Mock data
+  const shipments = Array.from({ length: 15 }).map((_, index) => ({
+    id: `CN12345678${index}`,
+    sender: 'John Doe',
+    receiver: 'Jane Smith',
+    origin: 'Kathmandu',
+    destination: 'Pokhara',
+    status: index % 3 === 0 ? 'Delivered' : index % 3 === 1 ? 'In Transit' : 'Processing',
+    date: `Oct ${15 + index}, 2023`
+  }));
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Your Shipments</h1>
-        {/* <Button onClick={() => router.push('/dashboard/create-shipment')}>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold">My Shipments</h1>
+        <Link 
+          href="/dashboard/create-shipment" 
+          className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg"
+        >
           Create New Shipment
-        </Button> */}
+        </Link>
       </div>
-      
-      {isLoading ? (
-        <div className="text-center py-10">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-        </div>
-      ) : (
-        // <ShipmentList shipments={shipments} />
-        ""
-      )}
+      <ShipmentList shipments={shipments} />
     </div>
   );
 }

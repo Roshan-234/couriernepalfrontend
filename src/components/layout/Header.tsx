@@ -10,9 +10,9 @@ const Header = () => {
           <div className="flex items-center space-x-4">
             <div className="flex items-center">
               <FaPhone className="mr-2" />
-              <span>+977 1-1234567</span>
+              <span>+977 1-5922458, 9851011426</span>
             </div>
-            <span>info@couriernepal.com</span>
+            <span>moonlightfreight@gmail.com</span>
           </div>
           <div className="flex items-center space-x-4">
             <Link href="/login" className="flex items-center">
@@ -27,7 +27,7 @@ const Header = () => {
       <div className="container py-4">
         <div className="flex justify-between items-center">
           <Link href="/" className="text-3xl font-bold text-blue-900">
-            Courier Nepal
+            Moonlight Freight Pvt. Ltd.
           </Link>
           
           <nav className="hidden md:flex space-x-8">

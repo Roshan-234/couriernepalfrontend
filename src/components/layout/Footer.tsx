@@ -7,12 +7,12 @@ const Footer = () => {
       <div className="container grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Company Info */}
         <div>
-          <h3 className="text-2xl font-bold mb-4">Courier Nepal</h3>
+          <h3 className="text-2xl font-bold mb-4">Moonlight Freight Pvt. Ltd.</h3>
           <p className="mb-4 text-gray-300">
             Fast, reliable and affordable courier services across Nepal and beyond.
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="text-gray-400 hover:text-white"><FaFacebook size={20} /></a>
+            <a href="https://www.facebook.com/nepalcargoservice" className="text-gray-400 hover:text-white"><FaFacebook size={20} /></a>
             <a href="#" className="text-gray-400 hover:text-white"><FaTwitter size={20} /></a>
             <a href="#" className="text-gray-400 hover:text-white"><FaInstagram size={20} /></a>
           </div>
@@ -52,18 +52,20 @@ const Footer = () => {
             </li>
             <li className="flex items-center">
               <FaPhone className="mr-3 text-orange-500" />
-              <span>+977 1-1234567</span>
+              <span>
+                +977 1-5922458, 9851011426
+              </span>
             </li>
             <li className="flex items-center">
               <FaEnvelope className="mr-3 text-orange-500" />
-              <span>info@couriernepal.com</span>
+              <span>moonlightfreight@gmail.com</span>
             </li>
           </ul>
         </div>
       </div>
 
       <div className="container border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-        <p>&copy; {new Date().getFullYear()} Courier Nepal. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Moonlight Freight Pvt. Ltd. All rights reserved.</p>
       </div>
     </footer>
   );

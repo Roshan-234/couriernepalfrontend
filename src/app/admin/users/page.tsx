@@ -1,27 +1,25 @@
-import { useQuery } from 'react-query';
-import api from '@/lib/api';
-// import UserTable from '@/components/admin/UserTable';
-import ProtectedRoute from '@/components/layout/ProtectedRoute';
+import UserTable from '@/components/admin/UserTable';
 
-export default function AdminUsersPage() {
-  const { data: users, isLoading } = useQuery('users', () =>
-    api.get('/admin/users').then(res => res.data)
-  );
+export default function UserManagementPage() {
+  // Mock data
+  const users = Array.from({ length: 20 }).map((_, index) => ({
+    id: `U${1000 + index}`,
+    name: `User ${index + 1}`,
+    email: `user${index + 1}@example.com`,
+    role: index % 5 === 0 ? 'admin' : 'user',
+    status: index % 3 === 0 ? 'active' : 'inactive',
+    joined: `Oct ${15 + index}, 2023`
+  }));
 
   return (
-    <ProtectedRoute roles={['admin']}>
-      <div>
-        <h1 className="text-2xl font-bold mb-6">User Management</h1>
-        
-        {isLoading ? (
-          <div className="text-center py-10">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-          </div>
-        ) : (
-        //   <UserTable users={users} />
-        ""
-        )}
+    <div>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold">User Management</h1>
+        <button className="bg-blue-900 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-lg">
+          Add New User
+        </button>
       </div>
-    </ProtectedRoute>
+      <UserTable users={users} />
+    </div>
   );
 }
