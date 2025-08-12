@@ -29,10 +29,10 @@ const AboutPage = () => {
               Founded in 2010, Courier Nepal started with a simple mission: to provide fast, reliable, and affordable courier services across Nepal. What began as a small team of 5 people has now grown into one of the leading logistics companies in the country.
             </p>
             <p className="text-gray-600 mb-4">
-              We've expanded our services to include international shipping, warehousing, and e-commerce logistics solutions. Despite our growth, we remain committed to our core values of customer satisfaction and operational excellence.
+              We&apos;ve expanded our services to include international shipping, warehousing, and e-commerce logistics solutions. Despite our growth, we remain committed to our core values of customer satisfaction and operational excellence.
             </p>
             <p className="text-gray-600">
-              Today, we serve thousands of customers every month, from individuals to large businesses, and we're proud to be a trusted name in the industry.
+              Today, we serve thousands of customers every month, from individuals to large businesses, and we&apos;re proud to be a trusted name in the industry.
             </p>
           </div>
           <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-96" />

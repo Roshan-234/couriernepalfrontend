@@ -1,5 +1,8 @@
+"use client";
+
 import { FaShippingFast, FaGlobeAsia, FaWarehouse, FaLaptopHouse, FaBoxOpen, FaTruck } from 'react-icons/fa';
 import ServiceCard from '@/components/common/ServiceCard';
+import { ButtonClient } from '@/components/common/ButtonClient';
 
 const ServicesPage = () => {
   const services = [
@@ -19,7 +22,7 @@ const ServicesPage = () => {
       icon: <FaWarehouse size={60} className="text-blue-600" />,
       title: 'Warehouse Solutions',
       description: 'Secure storage facilities with inventory management services',
-      link: '/services/warehousing'
+      link: '/services/warehouse'
     },
     {
       icon: <FaLaptopHouse size={60} className="text-blue-600" />,
@@ -76,12 +79,18 @@ const ServicesPage = () => {
             Join thousands of satisfied customers who trust us with their deliveries
           </p>
           <div className="flex justify-center gap-4">
-            <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition">
+            <ButtonClient 
+              variant="primary" 
+              href="/dashboard/create-shipment"
+            >
               Book a Pickup
-            </button>
-            <button className="bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 px-8 rounded-lg transition">
+            </ButtonClient>
+            <ButtonClient 
+              variant="secondary"
+              href="/contact"
+            >
               Contact Sales
-            </button>
+            </ButtonClient>
           </div>
         </div>
       </div>

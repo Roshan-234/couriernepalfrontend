@@ -1,10 +1,14 @@
+"use client";
+
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import api from '@/lib/api';
 
 interface User {
   id: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
+  is_admin: boolean;
   role: 'customer' | 'admin' | 'agent';
 }
 

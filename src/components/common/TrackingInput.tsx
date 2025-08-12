@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import api from '@/lib/api';
@@ -5,7 +7,7 @@ import api from '@/lib/api';
 const TrackingInput = () => {
   const [trackingId, setTrackingId] = useState('');
   const [isTracking, setIsTracking] = useState(false);
-  
+
   const { data: shipment, refetch, isLoading } = useQuery(
     ['tracking', trackingId],
     () => api.get(`/tracking/${trackingId}`).then(res => res.data),
@@ -39,13 +41,13 @@ const TrackingInput = () => {
           Track
         </button>
       </div>
-      
+
       {isTracking && isLoading && (
         <div className="text-center py-4">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
         </div>
       )}
-      
+
       {shipment && (
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-xl font-semibold mb-4">Shipment Details</h3>
@@ -72,7 +74,7 @@ const TrackingInput = () => {
               <span>{shipment.estimatedDelivery}</span>
             </div>
           </div>
-          
+
           <div className="mt-6">
             <h4 className="font-medium mb-2">Tracking History</h4>
             <div className="space-y-2">

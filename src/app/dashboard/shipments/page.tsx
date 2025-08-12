@@ -1,4 +1,5 @@
 import ShipmentList from '@/components/dashboard/ShipmentList';
+import Link from 'next/link';
 
 export default function ShipmentsPage() {
   // Mock data
