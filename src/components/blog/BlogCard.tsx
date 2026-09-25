@@ -1,5 +1,6 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import { formatDistanceToNow } from "date-fns";
+import Image from "next/image";
+import Link from "next/link";
 import { BlogPost } from "@/types/blog";
 
 interface BlogCardProps {
@@ -21,8 +22,8 @@ export default function BlogCard({ post }: BlogCardProps) {
       )}
       <div className="p-6">
         {post.category && (
-          <Link 
-            href={`/blog/category/${post.category.slug}`}
+          <Link
+            href={`/blog?category=${post.category.slug}`}
             className="text-sm font-semibold text-blue-600 hover:text-blue-800"
           >
             {post.category.name}
@@ -33,15 +34,14 @@ export default function BlogCard({ post }: BlogCardProps) {
             {post.title}
           </h3>
         </Link>
-        <p className="mt-3 text-gray-600 line-clamp-3">
-          {post.excerpt}
-        </p>
+        <p className="mt-3 text-gray-600 line-clamp-3">{post.excerpt}</p>
         <div className="mt-4 flex items-center justify-between">
+          <div className="text-sm text-gray-500">By {post.author.name}</div>
           <div className="text-sm text-gray-500">
-            By {post.author.name}
-          </div>
-          <div className="text-sm text-gray-500">
-            {formatDistanceToNow(new Date(post.published_at || post.created_at), { addSuffix: true })}
+            {formatDistanceToNow(
+              new Date(post.published_at || post.created_at),
+              { addSuffix: true },
+            )}
           </div>
         </div>
       </div>

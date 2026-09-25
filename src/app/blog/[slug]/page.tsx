@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { notFound } from "next/navigation";
+import { useParams, notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
@@ -9,13 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { BlogPost } from "@/types/blog";
 import BlogComments from "@/components/blog/BlogComments";
 
-interface BlogPostPageProps {
-  params: {
-    slug: string;
-  };
-}
-
-export default function BlogPostPage({ params }: BlogPostPageProps) {
+export default function BlogPostPage() {
+  const params = useParams<{ slug: string }>();
   const { user } = useAuth();
   const [post, setPost] = useState<BlogPost>();
   const [loading, setLoading] = useState(true);
@@ -80,7 +75,9 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               {post.category.name}
             </Link>
           )}
-          <h1 className="mt-2 text-4xl font-bold text-gray-900">{post.title}</h1>
+          <h1 className="mt-2 text-4xl font-bold text-gray-900">
+            {post.title}
+          </h1>
           <div className="mt-4 flex justify-between items-center">
             <div className="flex items-center text-gray-600">
               <span>By {post.author.name || post.author.username}</span>
@@ -108,7 +105,10 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         )}
 
         {/* Post Content */}
-        <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />
+        <div
+          className="prose max-w-none"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
 
         {/* Post Tags */}
         {post.tags && post.tags.length > 0 && (

@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import EditorJS, { OutputData } from "@editorjs/editorjs";
+import EditorJS, { ToolConstructable } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
 import Quote from "@editorjs/quote";
-import Image from "@editorjs/image";
 import Code from "@editorjs/code";
 
 interface EditorProps {
@@ -22,37 +21,29 @@ export default function Editor({ value, onChange }: EditorProps) {
         holder: "editor",
         tools: {
           header: {
-            class: Header,
+            class: Header as unknown as ToolConstructable,
             config: {
               placeholder: "Enter a header",
               levels: [1, 2, 3, 4],
-              defaultLevel: 1
-            }
+              defaultLevel: 1,
+            },
           },
           list: {
-            class: List,
-            inlineToolbar: true
+            class: List as unknown as ToolConstructable,
+            inlineToolbar: true,
           },
           quote: {
             class: Quote,
-            inlineToolbar: true
+            inlineToolbar: true,
           },
-          image: {
-            class: Image,
-            config: {
-              endpoints: {
-                byFile: "/api/blog/upload-image"
-              }
-            }
-          },
-          code: Code
+          code: Code,
         },
         data: value ? JSON.parse(value) : {},
         onChange: async () => {
           const data = await editorRef.current?.save();
           onChange(JSON.stringify(data));
         },
-        placeholder: "Start writing your post..."
+        placeholder: "Start writing your post...",
       });
 
       editorRef.current = editor;

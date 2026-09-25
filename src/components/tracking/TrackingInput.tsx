@@ -1,47 +1,32 @@
-'use client';
-
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { FaTruck, FaSearch } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/common/Button';
-
+"use client";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 export default function TrackingInput() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [trackingId, setTrackingId] = useState(searchParams.get('id') || '');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (trackingId) {
-      router.push(`/tracking?id=${trackingId}`);
-    }
-  };
-
+  const params = useSearchParams();
+  const [id, setId] = useState(params.get("id") || "");
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-2xl mx-auto"
+    <form
+      className="flex flex-col gap-3 sm:flex-row"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (id.trim())
+          router.push(`/tracking?id=${encodeURIComponent(id.trim())}`);
+      }}
     >
-      <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1 relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <FaTruck className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            type="text"
-            value={trackingId}
-            onChange={(e) => setTrackingId(e.target.value)}
-            placeholder="Enter your tracking number"
-            className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
-          />
-        </div>
-        <Button type="submit" className="flex items-center justify-center gap-2">
-          <FaSearch />
-          Track Package
-        </Button>
-      </form>
-    </motion.div>
+      <label htmlFor="tracking-number" className="sr-only">
+        Tracking number
+      </label>
+      <input
+        id="tracking-number"
+        className="field min-w-0 flex-1"
+        required
+        maxLength={100}
+        value={id}
+        onChange={(event) => setId(event.target.value)}
+        placeholder="Enter your tracking number"
+      />
+      <button className="action">Track shipment →</button>
+    </form>
   );
 }

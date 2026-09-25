@@ -1,25 +1,57 @@
-import UserTable from '@/components/admin/UserTable';
-
-export default function UserManagementPage() {
-  // Mock data
-  const users = Array.from({ length: 20 }).map((_, index) => ({
-    id: `U${1000 + index}`,
-    name: `User ${index + 1}`,
-    email: `user${index + 1}@example.com`,
-    role: index % 5 === 0 ? 'admin' : 'user',
-    status: index % 3 === 0 ? 'active' : 'inactive',
-    joined: `Oct ${15 + index}, 2023`
-  }));
-
+"use client";
+import { useQuery } from "@tanstack/react-query";
+import api, { errorMessage } from "@/lib/api";
+interface User {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  roles: string[];
+  status: string;
+}
+export default function Page() {
+  const {
+    data = [],
+    error,
+    isLoading,
+  } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: async () => (await api.get("/users")).data,
+  });
   return (
-    <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">User Management</h1>
-        <button className="bg-blue-900 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-lg">
-          Add New User
-        </button>
+    <>
+      <h1 className="mb-8 text-3xl font-bold">Customer directory</h1>
+      <div className="panel overflow-x-auto">
+        {isLoading ? (
+          <p role="status">Loading users…</p>
+        ) : error ? (
+          <p role="alert">{errorMessage(error)}</p>
+        ) : (
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr>
+                {["Name", "Email", "Roles", "Status"].map((h) => (
+                  <th key={h} scope="col" className="px-3 py-4">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((user) => (
+                <tr key={user.id} className="border-t border-slate-100">
+                  <td className="px-3 py-4">
+                    {user.first_name} {user.last_name}
+                  </td>
+                  <td className="px-3 py-4">{user.email}</td>
+                  <td className="px-3 py-4">{user.roles.join(", ")}</td>
+                  <td className="px-3 py-4 capitalize">{user.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
-      <UserTable users={users} />
-    </div>
+    </>
   );
 }

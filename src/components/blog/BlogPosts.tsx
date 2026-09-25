@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { useAuth } from "@/contexts/AuthContext";
 import { BlogPost } from "@/types/blog";
-import BlogPagination from './BlogPagination';
+import BlogCard from "./BlogCard";
+import BlogPagination from "./BlogPagination";
 
 interface BlogPostsProps {
   page: number;
@@ -14,12 +12,16 @@ interface BlogPostsProps {
   search?: string;
 }
 
-export default function BlogPosts({ page, category, tag, search }: BlogPostsProps) {
+export default function BlogPosts({
+  page,
+  category,
+  tag,
+  search,
+}: BlogPostsProps) {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const { user } = useAuth();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -50,6 +52,10 @@ export default function BlogPosts({ page, category, tag, search }: BlogPostsProp
     fetchPosts();
   }, [page, category, tag, search]);
 
+  if (loading) return <p role="status">Loading articles…</p>;
+  if (error) return <p role="alert">{error}</p>;
+  if (!posts.length)
+    return <p className="panel">No articles yet. Check back soon.</p>;
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -57,11 +63,11 @@ export default function BlogPosts({ page, category, tag, search }: BlogPostsProp
           <BlogCard key={post.id} post={post} />
         ))}
       </div>
-      {pages > 1 && (
-        <BlogPagination 
-          currentPage={current_page} 
-          totalPages={pages}
-          baseUrl={`/blog${category ? `/category/${category}` : ''}${tag ? `/tag/${tag}` : ''}${search ? `?search=${search}` : ''}`}
+      {totalPages > 1 && (
+        <BlogPagination
+          currentPage={page}
+          totalPages={totalPages}
+          baseUrl={`/blog${category ? `/category/${category}` : ""}${tag ? `/tag/${tag}` : ""}${search ? `?search=${search}` : ""}`}
         />
       )}
     </div>

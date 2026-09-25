@@ -27,7 +27,7 @@ export interface BlogPost {
   content: string;
   excerpt?: string;
   cover_image?: string;
-  status: 'draft' | 'published';
+  status: "draft" | "published";
   views?: number;
   category?: Category;
   author: User;
@@ -54,9 +54,7 @@ export interface PaginatedResponse<T> {
     total: number;
     totalPages: number;
     currentPage: number;
-  }
+  };
 }
 
 export type PaginatedBlogResponse = PaginatedResponse<BlogPost>;
-  current_page: number;
-}

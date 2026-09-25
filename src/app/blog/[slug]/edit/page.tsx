@@ -1,18 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { notFound } from "next/navigation";
+import { useParams, notFound } from "next/navigation";
 import { BlogEditor } from "@/components/blog/BlogEditor";
 import { useAuth } from "@/contexts/AuthContext";
 import { BlogPost } from "@/types/blog";
 
-interface BlogEditPageProps {
-  params: {
-    slug: string;
-  };
-}
-
-export default function BlogEditPage({ params: { slug } }: BlogEditPageProps) {
+export default function BlogEditPage() {
+  const params = useParams<{ slug: string }>();
+  const { slug } = params;
   const { user } = useAuth();
   const [post, setPost] = useState<BlogPost>();
   const [loading, setLoading] = useState(true);
@@ -48,11 +44,9 @@ export default function BlogEditPage({ params: { slug } }: BlogEditPageProps) {
   if (!user?.is_admin) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          Access Denied
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
         <p className="text-gray-600">
-          You don't have permission to access this page.
+          You don&apos;t have permission to access this page.
         </p>
       </div>
     );

@@ -1,140 +1,123 @@
-'use client';
-
-import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
-import { FaBox, FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
-import { format } from 'date-fns';
-import api from '@/lib/api';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-
-export type TrackingEvent = {
-  id: string;
-  status: string;
-  location: string;
-  timestamp: string;
-  note?: string;
-};
-
-export type TrackingResult = {
-  id: string;
+"use client";
+import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import api, { errorMessage } from "@/lib/api";
+export interface TrackingData {
+  tracking_no: string;
   status: string;
   origin: string;
   destination: string;
   created_at: string;
-  estimated_delivery: string;
-  events: TrackingEvent[];
-};
-
-export default function TrackingResult() {
-  const searchParams = useSearchParams();
-  const trackingId = searchParams.get('id');
-
-  const { data: tracking, isLoading, isError, error, refetch } = useQuery<TrackingResult>({
-    queryKey: ['tracking', trackingId],
-    queryFn: async () => {
-      const { data } = await api.get(`/api/tracking/${trackingId}`);
-      return data;
-    },
-    enabled: !!trackingId,
-  });
-
-  useEffect(() => {
-    if (trackingId) {
-      refetch();
-    }
-  }, [trackingId, refetch]);
-
-  if (!trackingId) return null;
-  if (isLoading) return <LoadingSpinner />;
-  if (isError) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-red-500">Error: {(error as Error).message}</p>
-      </div>
-    );
-  }
-  if (!tracking) return null;
-
+  estimated_delivery: string | null;
+  events: {
+    id: number;
+    status: string;
+    location: string;
+    description?: string;
+    timestamp: string;
+  }[];
+}
+export function displayDate(value?: string | null) {
+  if (!value) return "To be confirmed";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? "To be confirmed"
+    : date.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+}
+export function TrackingCard({ tracking }: { tracking: TrackingData }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-xl shadow-lg p-6 md:p-8"
-    >
-      {/* Header */}
-      <div className="flex flex-col md:flex-row gap-6 items-start md:items-center mb-8">
-        <div className="flex items-center justify-center w-16 h-16 bg-primary-100 rounded-xl">
-          <FaBox className="w-8 h-8 text-primary-600" />
-        </div>
-        <div className="flex-1">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Tracking ID: {tracking.id}
+    <div className="panel">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-6">
+        <div>
+          <p className="eyebrow mb-2 text-slate-500">SHIPMENT DETAILS</p>
+          <h2 className="break-all text-2xl font-bold">
+            {tracking.tracking_no}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <FaMapMarkerAlt className="text-primary-500" />
-              <span>From: {tracking.origin}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <FaMapMarkerAlt className="text-primary-500" />
-              <span>To: {tracking.destination}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <FaCalendarAlt className="text-primary-500" />
-              <span>Created: {format(new Date(tracking.created_at), 'MMM dd, yyyy')}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <FaCalendarAlt className="text-primary-500" />
-              <span>Est. Delivery: {format(new Date(tracking.estimated_delivery), 'MMM dd, yyyy')}</span>
-            </div>
-          </div>
         </div>
-        <div className="flex items-center">
-          <span className="px-3 py-1 rounded-full text-sm font-medium capitalize" style={{
-            backgroundColor: 
-              tracking.status === 'delivered' ? 'rgb(220 252 231)' :
-              tracking.status === 'in_transit' ? 'rgb(219 234 254)' :
-              'rgb(254 243 199)',
-            color:
-              tracking.status === 'delivered' ? 'rgb(22 163 74)' :
-              tracking.status === 'in_transit' ? 'rgb(29 78 216)' :
-              'rgb(202 138 4)'
-          }}>
-            {tracking.status.replace('_', ' ')}
-          </span>
-        </div>
+        <span className="rounded-full bg-teal-50 px-4 py-2 text-sm font-semibold capitalize text-teal-800">
+          {tracking.status.replaceAll("_", " ")}
+        </span>
       </div>
-
-      {/* Timeline */}
-      <div className="space-y-8">
-        {tracking.events.map((event, index) => (
-          <div key={event.id} className="relative">
-            {index !== tracking.events.length - 1 && (
-              <div className="absolute top-6 left-3 -bottom-10 w-0.5 bg-gray-200" />
-            )}
-            <div className="relative flex items-start group">
-              <div className="flex items-center justify-center w-6 h-6 bg-primary-100 rounded-full ring-8 ring-white">
-                <div className="w-2 h-2 bg-primary-600 rounded-full" />
-              </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {event.status}
-                </h3>
-                <div className="mt-1 text-sm text-gray-500">
-                  <span>{event.location}</span>
-                  <span className="mx-2">•</span>
-                  <time>{format(new Date(event.timestamp), 'MMM dd, yyyy HH:mm')}</time>
-                </div>
-                {event.note && (
-                  <p className="mt-2 text-sm text-gray-600">{event.note}</p>
-                )}
-              </div>
-            </div>
+      <dl className="my-7 grid grid-cols-2 gap-6 text-sm">
+        {[
+          ["From", tracking.origin],
+          ["To", tracking.destination],
+          ["Created", displayDate(tracking.created_at)],
+          ["Estimated delivery", displayDate(tracking.estimated_delivery)],
+        ].map(([key, value]) => (
+          <div key={key}>
+            <dt className="text-slate-500">{key}</dt>
+            <dd className="mt-1 font-semibold">{value || "To be confirmed"}</dd>
           </div>
         ))}
-      </div>
-    </motion.div>
+      </dl>
+      <h3 className="mb-6 text-lg font-bold">Shipment journey</h3>
+      {!tracking.events.length && (
+        <p className="text-sm text-slate-500">
+          Updates will appear here once your shipment starts moving.
+        </p>
+      )}
+      <ol className="space-y-0">
+        {tracking.events.map((event) => (
+          <li
+            key={event.id}
+            className="relative ml-2 border-l border-teal-200 pb-7 pl-6 last:border-transparent"
+          >
+            <span className="absolute -left-1.5 top-1 h-3 w-3 rounded-full bg-teal-700 ring-4 ring-white" />
+            <h4 className="font-semibold capitalize">
+              {event.status.replaceAll("_", " ")}
+            </h4>
+            <p className="mt-1 text-sm text-slate-500">
+              {event.location} · {displayDate(event.timestamp)}
+            </p>
+            {event.description && (
+              <p className="mt-2 text-sm text-slate-600">{event.description}</p>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
   );
+}
+export default function TrackingResult() {
+  const id = useSearchParams().get("id")?.trim();
+  const { data, isLoading, error, refetch } = useQuery<TrackingData>({
+    queryKey: ["tracking", id],
+    queryFn: async () =>
+      (await api.get(`/tracking/${encodeURIComponent(id!)}`)).data,
+    enabled: !!id,
+  });
+  if (!id)
+    return (
+      <div className="panel text-center text-sm text-slate-500">
+        Your shipment updates will appear here. Find your tracking number in
+        your booking confirmation.
+      </div>
+    );
+  if (isLoading)
+    return (
+      <p role="status" className="py-12 text-center">
+        Finding your shipment…
+      </p>
+    );
+  if (error)
+    return (
+      <div role="alert" className="panel text-center">
+        <h2 className="text-lg font-bold">We couldn’t find that shipment</h2>
+        <p className="my-4 text-sm text-slate-600">
+          {errorMessage(
+            error,
+            "Check the tracking number and try again. If it was just booked, contact our team for help.",
+          )}
+        </p>
+        <button className="action action-outline" onClick={() => refetch()}>
+          Try again
+        </button>
+      </div>
+    );
+  return data ? <TrackingCard tracking={data} /> : null;
 }

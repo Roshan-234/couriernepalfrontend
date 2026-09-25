@@ -9,7 +9,10 @@ interface PaginationProps {
   baseUrl?: string;
 }
 
-export default function BlogPagination({ currentPage, totalPages, baseUrl = "/blog" }: PaginationProps) {
+export default function BlogPagination({
+  currentPage,
+  totalPages,
+}: PaginationProps) {
   const router = useRouter();
   const showEllipsis = totalPages > 7;
 
@@ -21,7 +24,7 @@ export default function BlogPagination({ currentPage, totalPages, baseUrl = "/bl
 
   const getVisiblePages = () => {
     const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-    
+
     if (!showEllipsis) return pages;
 
     if (currentPage <= 3) {
@@ -48,7 +51,10 @@ export default function BlogPagination({ currentPage, totalPages, baseUrl = "/bl
   }
 
   return (
-    <nav className="flex justify-center items-center space-x-2 mt-8" aria-label="Pagination">
+    <nav
+      className="flex justify-center items-center space-x-2 mt-8"
+      aria-label="Pagination"
+    >
       <Button
         variant="outline"
         onClick={() => handlePageChange(currentPage - 1)}
@@ -56,13 +62,10 @@ export default function BlogPagination({ currentPage, totalPages, baseUrl = "/bl
       >
         Previous
       </Button>
-      
-      {visiblePages.map((page, index) => 
+
+      {visiblePages.map((page, index) =>
         page === null ? (
-          <span
-            key={`ellipsis-${index}`}
-            className="px-4 py-2 text-gray-500"
-          >
+          <span key={`ellipsis-${index}`} className="px-4 py-2 text-gray-500">
             ...
           </span>
         ) : (
@@ -73,9 +76,9 @@ export default function BlogPagination({ currentPage, totalPages, baseUrl = "/bl
           >
             {page}
           </Button>
-        )
+        ),
       )}
-      
+
       <Button
         variant="outline"
         onClick={() => handlePageChange(currentPage + 1)}
@@ -83,43 +86,6 @@ export default function BlogPagination({ currentPage, totalPages, baseUrl = "/bl
       >
         Next
       </Button>
-    </nav>
-  );
-}
-        if (page === '...') {
-          return (
-            <span
-              key={`ellipsis-${index}`}
-              className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white"
-            >
-              ...
-            </span>
-          );
-        }
-
-        return (
-          <Link
-            key={page}
-            href={getPageUrl(page as number)}
-            className={`relative inline-flex items-center px-4 py-2 text-sm font-medium ${
-              currentPage === page
-                ? 'z-10 bg-blue-600 text-white'
-                : 'text-gray-700 bg-white hover:bg-gray-50'
-            } border border-gray-300 rounded-md`}
-          >
-            {page}
-          </Link>
-        );
-      })}
-
-      {currentPage < totalPages && (
-        <Link
-          href={getPageUrl(currentPage + 1)}
-          className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Next
-        </Link>
-      )}
     </nav>
   );
 }

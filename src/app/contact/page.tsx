@@ -1,165 +1,133 @@
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
-
-const ContactPage = () => {
+"use client";
+import { useState } from "react";
+import api, { errorMessage } from "@/lib/api";
+export default function Page() {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [sent, setSent] = useState(false);
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setBusy(true);
+    setError("");
+    try {
+      await api.post(
+        "/contact",
+        Object.fromEntries(new FormData(e.currentTarget)),
+      );
+      setSent(true);
+    } catch (error) {
+      setError(
+        errorMessage(
+          error,
+          "Your message could not be sent. Please try again.",
+        ),
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <div className="bg-blue-900 text-white py-20">
-        <div className="container mx-auto text-center">
-          <h1 className="text-4xl font-bold mb-6">Contact Us</h1>
-          <p className="text-xl max-w-3xl mx-auto">
-            Have questions? We&apos;re here to help. Get in touch with our team.
-          </p>
+    <div className="container py-16 sm:py-20">
+      <p className="eyebrow mb-4 text-teal-700">REAL PEOPLE. READY TO HELP.</p>
+      <h1 className="text-4xl font-bold sm:text-5xl">Let’s talk delivery.</h1>
+      <p className="mt-5 max-w-xl leading-7 text-slate-500">
+        A shipping question, a business idea, or a parcel that needs a little
+        attention. Our team is here for you.
+      </p>
+      <div className="mt-12 grid gap-12 md:grid-cols-2">
+        <div className="space-y-8">
+          {[
+            ["Visit us", "Nayabazar, Kathmandu, Nepal"],
+            ["Call us", "+977 1-5922458"],
+            ["Email us", "moonlightfreight@gmail.com"],
+            ["Office hours", "Sunday–Friday, 7 AM–7 PM"],
+          ].map(([label, text]) => (
+            <div key={label}>
+              <h2 className="mb-2 text-lg font-bold">{label}</h2>
+              {label === "Call us" ? (
+                <a className="text-teal-700" href="tel:+97715922458">
+                  {text}
+                </a>
+              ) : label === "Email us" ? (
+                <a className="break-all text-teal-700" href={`mailto:${text}`}>
+                  {text}
+                </a>
+              ) : (
+                <p className="text-sm text-slate-500">{text}</p>
+              )}
+            </div>
+          ))}
         </div>
-      </div>
-
-      <div className="container mx-auto py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-          {/* Contact Information */}
-          <div>
-            <h2 className="text-3xl font-bold mb-8">Get In Touch</h2>
-            
-            <div className="space-y-6">
-              <div className="flex items-start">
-                <FaMapMarkerAlt className="text-orange-500 mt-1 mr-4" size={24} />
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Head Office</h3>
-                  <p className="text-gray-600">Nayabazar, Kathmandu, Nepal</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start">
-                <FaPhone className="text-orange-500 mt-1 mr-4" size={24} />
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Phone</h3>
-                  <p className="text-gray-600">+977 1-5922458</p>
-                  <p className="text-gray-600">+977 9851011426 (Support)</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start">
-                <FaEnvelope className="text-orange-500 mt-1 mr-4" size={24} />
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Email</h3>
-                  <p className="text-gray-600">moonlightfreight@gmail.com</p>
-                  {/* <p className="text-gray-600">support@couriernepal.com</p> */}
-                </div>
-              </div>
-              
-              <div className="flex items-start">
-                <FaClock className="text-orange-500 mt-1 mr-4" size={24} />
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Business Hours</h3>
-                  <p className="text-gray-600">Sunday - Friday: 7AM - 7PM</p>
-                  {/* <p className="text-gray-600">Saturday: 10AM - 4PM</p> */}
-                </div>
-              </div>
+        <div className="panel">
+          {sent ? (
+            <div role="status" className="py-12">
+              <h2 className="text-2xl font-bold">Message received.</h2>
+              <p className="mt-4 leading-7 text-slate-500">
+                Thank you for getting in touch. Our team will respond using the
+                email address you provided.
+              </p>
+              <button
+                className="action action-outline mt-6"
+                onClick={() => setSent(false)}
+              >
+                Send another message
+              </button>
             </div>
-
-            <div className="mt-10">
-              <h3 className="text-xl font-bold mb-4">Follow Us</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="bg-blue-800 text-white p-3 rounded-full hover:bg-blue-900 transition">
-                  <FaFacebook size={20} />
-                </a>
-                <a href="#" className="bg-blue-800 text-white p-3 rounded-full hover:bg-blue-900 transition">
-                  <FaTwitter size={20} />
-                </a>
-                <a href="#" className="bg-blue-800 text-white p-3 rounded-full hover:bg-blue-900 transition">
-                  <FaInstagram size={20} />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Form */}
-          <div>
-            <div className="bg-white rounded-xl shadow-lg p-8">
-              <h2 className="text-3xl font-bold mb-8">Send Us a Message</h2>
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-gray-700 mb-2">Your Name</label>
+          ) : (
+            <>
+              <h2 className="mb-6 text-2xl font-bold">Send us a message</h2>
+              <form onSubmit={submit} className="space-y-5">
+                {[
+                  ["name", "Your name"],
+                  ["email", "Email address"],
+                  ["subject", "Subject"],
+                ].map(([name, label]) => (
+                  <div key={name}>
+                    <label
+                      className="mb-2 block text-sm font-medium"
+                      htmlFor={name}
+                    >
+                      {label}
+                    </label>
                     <input
-                      type="text"
-                      id="name"
-                      className="w-full p-3 border border-gray-300 rounded-lg"
-                      placeholder="John Doe"
+                      id={name}
+                      name={name}
+                      className="field"
+                      type={name === "email" ? "email" : "text"}
                       required
+                      maxLength={150}
                     />
                   </div>
-                  <div>
-                    <label htmlFor="email" className="block text-gray-700 mb-2">Email Address</label>
-                    <input
-                      type="email"
-                      id="email"
-                      className="w-full p-3 border border-gray-300 rounded-lg"
-                      placeholder="your@email.com"
-                      required
-                    />
-                  </div>
-                </div>
-                
+                ))}
                 <div>
-                  <label htmlFor="phone" className="block text-gray-700 mb-2">Phone Number</label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    className="w-full p-3 border border-gray-300 rounded-lg"
-                    placeholder="+977 98XXXXXXXX"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="subject" className="block text-gray-700 mb-2">Subject</label>
-                  <input
-                    type="text"
-                    id="subject"
-                    className="w-full p-3 border border-gray-300 rounded-lg"
-                    placeholder="How can we help you?"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="message" className="block text-gray-700 mb-2">Message</label>
+                  <label
+                    className="mb-2 block text-sm font-medium"
+                    htmlFor="message"
+                  >
+                    How can we help?
+                  </label>
                   <textarea
+                    className="field"
                     id="message"
+                    name="message"
                     rows={5}
-                    className="w-full p-3 border border-gray-300 rounded-lg"
-                    placeholder="Type your message here..."
                     required
-                  ></textarea>
+                    maxLength={5000}
+                  />
                 </div>
-                
-                <button
-                  type="submit"
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg"
-                >
-                  Send Message
+                {error && (
+                  <p role="alert" className="text-sm text-red-700">
+                    {error}
+                  </p>
+                )}
+                <button className="action w-full" disabled={busy}>
+                  {busy ? "Sending…" : "Send message →"}
                 </button>
               </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Map Section */}
-      <div className="container mx-auto pb-16">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.456206028891!2d85.32047061506208!3d27.70300898279398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1908434cb1c5%3A0x1fdf1a6d41d2514f!2sKathmandu%2044600%2C%20Nepal!5e0!3m2!1sen!2sus!4v1634116787894!5m2!1sen!2sus" 
-            width="100%" 
-            height="450" 
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-          ></iframe>
+            </>
+          )}
         </div>
       </div>
     </div>
   );
-};
-
-export default ContactPage;
+}

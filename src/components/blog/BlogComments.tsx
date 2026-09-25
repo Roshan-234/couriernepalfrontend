@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { csrfToken } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { BlogComment } from "@/types/blog";
 import { Button } from "@/components/ui/Button";
@@ -18,7 +19,7 @@ export default function BlogComments({ slug }: BlogCommentsProps) {
   const [error, setError] = useState("");
   const { user } = useAuth();
 
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       const response = await fetch(`/api/blog/posts/${slug}/comments`);
       if (!response.ok) {
@@ -32,11 +33,11 @@ export default function BlogComments({ slug }: BlogCommentsProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug]);
 
   useEffect(() => {
     fetchComments();
-  }, [slug]);
+  }, [fetchComments]);
 
   const handleSubmit = async (e: React.FormEvent, parentId?: number) => {
     e.preventDefault();
@@ -45,6 +46,7 @@ export default function BlogComments({ slug }: BlogCommentsProps) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-CSRF-TOKEN": csrfToken(),
         },
         body: JSON.stringify({
           content: newComment,
@@ -71,9 +73,13 @@ export default function BlogComments({ slug }: BlogCommentsProps) {
     }
 
     try {
-      const response = await fetch(`/api/blog/posts/${slug}/comments/${commentId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/blog/posts/${slug}/comments/${commentId}`,
+        {
+          method: "DELETE",
+          headers: { "X-CSRF-TOKEN": csrfToken() },
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete comment");
@@ -91,13 +97,13 @@ export default function BlogComments({ slug }: BlogCommentsProps) {
       <div className="flex justify-between items-start mb-2">
         <div>
           <span className="font-medium text-gray-900">
-            {comment.author.name || comment.author.username}
+            {comment.author?.name || comment.author?.username || "Customer"}
           </span>
           <span className="text-gray-500 text-sm ml-2">
             {new Date(comment.created_at).toLocaleDateString()}
           </span>
         </div>
-        {(user?.is_admin || user?.id === comment.author.id) && (
+        {(user?.is_admin || user?.id === comment.author?.id) && (
           <button
             onClick={() => handleDelete(comment.id)}
             className="text-red-600 hover:text-red-800 text-sm"
@@ -161,7 +167,7 @@ export default function BlogComments({ slug }: BlogCommentsProps) {
   return (
     <div className="mt-12">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Comments</h2>
-      
+
       {user ? (
         <form onSubmit={(e) => handleSubmit(e)} className="mb-8">
           <textarea

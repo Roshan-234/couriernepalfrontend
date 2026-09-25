@@ -1,4 +1,4 @@
-import { Bar } from 'react-chartjs-2';
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,8 +8,8 @@ import {
   Tooltip,
   Legend,
   ChartData,
-} from 'chart.js';
-import { getRevenueAnalytics } from '@/lib/adminApi';
+} from "chart.js";
+import { getRevenueAnalytics } from "@/lib/adminApi";
 
 ChartJS.register(
   CategoryScale,
@@ -17,7 +17,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const options = {
@@ -25,14 +25,14 @@ const options = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: 'top' as const,
+      position: "top" as const,
     },
   },
   scales: {
     y: {
       beginAtZero: true,
       ticks: {
-        callback: (value: number) => `$${value.toLocaleString()}`,
+        callback: (value: string | number) => `$${value.toLocaleString()}`,
       },
     },
   },
@@ -41,28 +41,28 @@ const options = {
 export default async function RevenueChart() {
   const analytics = await getRevenueAnalytics();
 
-  const data: ChartData<'bar'> = {
+  const data: ChartData<"bar"> = {
     labels: analytics.labels,
     datasets: [
       {
-        label: 'Revenue',
+        label: "Revenue",
         data: analytics.revenue,
-        backgroundColor: 'rgba(34, 197, 94, 0.5)',
-        borderColor: 'rgb(34, 197, 94)',
+        backgroundColor: "rgba(34, 197, 94, 0.5)",
+        borderColor: "rgb(34, 197, 94)",
         borderWidth: 1,
       },
       {
-        label: 'Expenses',
+        label: "Expenses",
         data: analytics.expenses,
-        backgroundColor: 'rgba(239, 68, 68, 0.5)',
-        borderColor: 'rgb(239, 68, 68)',
+        backgroundColor: "rgba(239, 68, 68, 0.5)",
+        borderColor: "rgb(239, 68, 68)",
         borderWidth: 1,
       },
       {
-        label: 'Profit',
+        label: "Profit",
         data: analytics.profit,
-        backgroundColor: 'rgba(59, 130, 246, 0.5)',
-        borderColor: 'rgb(59, 130, 246)',
+        backgroundColor: "rgba(59, 130, 246, 0.5)",
+        borderColor: "rgb(59, 130, 246)",
         borderWidth: 1,
       },
     ],
