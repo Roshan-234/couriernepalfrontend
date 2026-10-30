@@ -7,6 +7,7 @@ import {
   ReactNode,
 } from "react";
 import api from "@/lib/api";
+import { useQueryClient } from "@tanstack/react-query";
 export interface User {
   id: number;
   first_name: string;
@@ -37,10 +38,12 @@ const AuthContext = createContext<
       isAuthenticated: boolean;
       login: (email: string, password: string) => Promise<User>;
       logout: () => Promise<void>;
+      updateUser: (user: User) => void;
     }
   | undefined
 >(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const cache = useQueryClient();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -56,17 +59,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     const { data } = await api.post("/auth/login", { email, password });
     const current = normalize(data.user);
+    cache.clear();
     setUser(current);
     return current;
   };
   const logout = async () => {
     await api.post("/auth/logout");
+    cache.clear();
     setUser(null);
     window.location.assign("/auth/login");
   };
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, logout, isAuthenticated: !!user }}
+      value={{ user, loading, login, logout, updateUser: (value) => setUser(normalize(value)), isAuthenticated: !!user }}
     >
       {children}
     </AuthContext.Provider>

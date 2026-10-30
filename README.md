@@ -1,4 +1,4 @@
-# Courier Nepal frontend
+# Moonlight Freight frontend
 
 Next.js / React frontend for the Flask Courier Nepal backend.
 
@@ -33,6 +33,19 @@ BACKEND_URL is the server-only backend origin, without /api. Set it before build
 
 ## Limits
 
-Admin settings no longer pretend to persist unsupported configuration. Deployment settings are managed on the server. The user directory is read-only; account mutations remain available through the backend API. Online estimates require pricing rules. Password-reset email requires SMTP. External carriers and production services were not tested locally.
+Admin settings no longer pretend to persist unsupported configuration. Deployment settings are managed on the server. The user directory supports account status changes with server-side authorization. Online estimates require pricing rules. Password-reset email requires SMTP. External carriers and production services were not tested locally.
 
-Legacy unused components retain image-optimization warnings; the legacy EditorJS component retains a hook-dependency warning. Lint has no errors. The rich-text image-upload tool is omitted because the backend has no upload endpoint.
+Legacy unused components retain image-optimization warnings; EditorJS content is rendered through a sanitized block renderer. Lint has no errors. The rich-text image-upload tool is omitted because the backend has no upload endpoint.
+
+## Functional update
+
+- Next.js and eslint-config-next updated to 15.5.28; package-lock.json included.
+- Admin shipping-rate editor at `/admin/pricing` connects to the public quote calculator.
+- Customer session controls at `/dashboard/sessions`; account status controls at `/admin/users`.
+- Profile changes update the shared account state immediately; login/logout clears account query caches.
+- Blog content supports EditorJS JSON and sanitizes legacy HTML with DOMPurify.
+- GitHub Actions run lint, production build, and TypeScript checks.
+
+On constrained Windows environments, use `NEXT_LOW_MEMORY_BUILD=1` to build without the webpack worker and with one static generation worker. Optional `NEXT_DIST_DIR=.next-verified` isolates build output; use the same directory variable for build and start. Default hosting still uses `.next`.
+
+Verified locally: production build, TypeScript, lint (no errors; five legacy image warnings), and HTTP integration through the production Next.js proxy to Flask. Production database, SMTP and carrier connections are separate deployment checks.

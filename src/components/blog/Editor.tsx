@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import EditorJS, { ToolConstructable } from "@editorjs/editorjs";
+import { useEffect, useRef, useId } from "react";
+import EditorJS, { ToolConstructable, OutputData } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
 import Quote from "@editorjs/quote";
@@ -13,12 +13,18 @@ interface EditorProps {
 }
 
 export default function Editor({ value, onChange }: EditorProps) {
+  const holder = useId();
+  const initialValue = useRef(value);
+  const changeHandler = useRef(onChange);
+  changeHandler.current = onChange;
   const editorRef = useRef<EditorJS | null>(null);
 
   useEffect(() => {
+    let initial: OutputData = { blocks: [] };
+    try { initial = initialValue.current ? JSON.parse(initialValue.current) : { blocks: [] }; } catch { initial = { blocks: [{ type: "paragraph", data: { text: initialValue.current } }] }; }
     if (!editorRef.current) {
       const editor = new EditorJS({
-        holder: "editor",
+        holder,
         tools: {
           header: {
             class: Header as unknown as ToolConstructable,
@@ -38,10 +44,10 @@ export default function Editor({ value, onChange }: EditorProps) {
           },
           code: Code,
         },
-        data: value ? JSON.parse(value) : {},
+        data: initial,
         onChange: async () => {
           const data = await editorRef.current?.save();
-          onChange(JSON.stringify(data));
+          if (data) changeHandler.current(JSON.stringify(data));
         },
         placeholder: "Start writing your post...",
       });
@@ -50,11 +56,11 @@ export default function Editor({ value, onChange }: EditorProps) {
     }
 
     return () => {
-      if (editorRef.current && editorRef.current.destroy) {
-        editorRef.current.destroy();
-      }
+      const editor = editorRef.current;
+      editorRef.current = null;
+      if (editor) void editor.isReady.then(() => editor.destroy()).catch(() => {});
     };
-  }, []);
+  }, [holder]);
 
-  return <div id="editor" className="prose max-w-none" />;
+  return <div id={holder} className="prose max-w-none" />;
 }

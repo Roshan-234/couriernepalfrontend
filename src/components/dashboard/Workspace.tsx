@@ -21,6 +21,7 @@ export default function Workspace({
         ["Overview", "/admin/dashboard"],
         ["Shipments", "/admin/shipments"],
         ["Users", "/admin/users"],
+        ["Pricing", "/admin/pricing"],
         ["Settings", "/admin/settings"],
       ]
     : [
@@ -28,6 +29,7 @@ export default function Workspace({
         ["My shipments", "/dashboard/shipments"],
         ["Create shipment", "/dashboard/create-shipment"],
         ["My profile", "/dashboard/profile"],
+        ["Sessions", "/dashboard/sessions"],
       ];
   return (
     <ProtectedRoute admin={admin}>

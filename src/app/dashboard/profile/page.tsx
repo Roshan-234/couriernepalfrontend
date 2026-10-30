@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import api, { errorMessage } from "@/lib/api";
 export default function Page() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   async function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -11,10 +11,11 @@ export default function Page() {
     setBusy(true);
     setMessage("");
     try {
-      await api.patch(
+      const { data } = await api.patch(
         "/auth/profile",
         Object.fromEntries(new FormData(e.currentTarget)),
       );
+      updateUser(data);
       setMessage("Your profile has been saved.");
     } catch (error) {
       setMessage(errorMessage(error));

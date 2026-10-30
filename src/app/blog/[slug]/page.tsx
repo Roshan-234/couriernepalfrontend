@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { BlogPost } from "@/types/blog";
+import BlogContent from "@/components/blog/BlogContent";
 import BlogComments from "@/components/blog/BlogComments";
 
 export default function BlogPostPage() {
@@ -105,10 +106,7 @@ export default function BlogPostPage() {
         )}
 
         {/* Post Content */}
-        <div
-          className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
+        <BlogContent content={post.content} />
 
         {/* Post Tags */}
         {post.tags && post.tags.length > 0 && (
