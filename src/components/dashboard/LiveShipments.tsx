@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getShipments } from "@/lib/shipments";
@@ -13,26 +13,20 @@ export default function LiveShipments({
   admin?: boolean;
 }) {
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [debounced, setDebounced] = useState('');
+  useEffect(() => { const timer = setTimeout(() => setDebounced(search), 250); return () => clearTimeout(timer); }, [search]);
   const {
-    data = [],
+    data: result,
     isLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: ["shipments", admin],
-    queryFn: () => getShipments(admin),
+    queryKey: ["shipments", admin, page, debounced, overview],
+    queryFn: () => getShipments(admin, page, debounced, overview ? 5 : 20),
   });
-  const filtered = data.filter((shipment) =>
-    [
-      shipment.tracking_no,
-      shipment.destination,
-      shipment.origin,
-      shipment.status,
-    ]
-      .join(" ")
-      .toLowerCase()
-      .includes(search.toLowerCase()),
-  );
+  const data = result?.items || [];
+  const filtered = data;
   return (
     <div>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
@@ -64,18 +58,18 @@ export default function LiveShipments({
           {overview && (
             <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
               {[
-                ["Total shipments", data.length],
+                ["Total shipments", result?.summary.total || 0],
                 [
                   "In transit",
-                  data.filter((s) => s.status === "in_transit").length,
+                  result?.summary.in_transit || 0,
                 ],
                 [
                   "Delivered",
-                  data.filter((s) => s.status === "delivered").length,
+                  result?.summary.delivered || 0,
                 ],
                 [
                   "Awaiting pickup",
-                  data.filter((s) => s.status === "pending").length,
+                  result?.summary.pending || 0,
                 ],
               ].map(([label, value]) => (
                 <div key={label} className="panel">
@@ -95,7 +89,7 @@ export default function LiveShipments({
                 placeholder="Search number, route or status"
                 className="field max-w-sm"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               />
             </div>
             {!filtered.length ? (
@@ -168,6 +162,7 @@ export default function LiveShipments({
               </div>
             )}
           </div>
+          {!overview && result && result.pages > 1 && <nav aria-label="Shipment pages" className="mt-5 flex items-center justify-between gap-4"><button className="action action-outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous</button><span className="text-sm">Page {page} of {result.pages} · {result.total} shipments</span><button className="action action-outline" disabled={page >= result.pages} onClick={() => setPage(page + 1)}>Next</button></nav>}
         </>
       )}
     </div>

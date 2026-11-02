@@ -12,6 +12,7 @@ export interface Shipment extends TrackingData {
   total_packages: number;
   notes: string;
 }
-export async function getShipments(admin = false): Promise<Shipment[]> {
-  return (await api.get(admin ? "/shipments" : "/shipments/my")).data;
+export interface ShipmentPage { items: Shipment[]; total: number; page: number; pages: number; summary: { total: number; in_transit: number; delivered: number; pending: number }; }
+export async function getShipments(admin = false, page = 1, search = '', perPage = 20): Promise<ShipmentPage> {
+ return (await api.get('/shipments/page', { params: { all: admin ? 1 : 0, page, search, per_page: perPage } })).data;
 }

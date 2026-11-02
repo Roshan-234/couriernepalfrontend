@@ -10,7 +10,7 @@ interface BlogCardProps {
 export default function BlogCard({ post }: BlogCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:-translate-y-1">
-      {post.cover_image && (
+      {post.cover_image?.startsWith("/images/") && (
         <div className="relative h-48">
           <Image
             src={post.cover_image}

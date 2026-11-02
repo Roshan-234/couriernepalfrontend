@@ -1,6 +1,4 @@
-"use client";
-import { useEffect, useState } from "react";
-import DOMPurify from "dompurify";
+import sanitizeHtml from "sanitize-html";
 
 const escape = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 function list(items: unknown, depth = 0): string {
@@ -8,8 +6,7 @@ function list(items: unknown, depth = 0): string {
   return items.map(item => typeof item === "string" ? `<li>${item}</li>` : item && typeof item === "object" ? `<li>${String(item.content ?? "")}<ul>${list(item.items, depth + 1)}</ul></li>` : "").join("");
 }
 export default function BlogContent({ content }: { content: string }) {
-  const [html, setHtml] = useState("");
-  useEffect(() => {
+
     let markup = content;
     try {
       const parsed = JSON.parse(content);
@@ -22,7 +19,6 @@ export default function BlogContent({ content }: { content: string }) {
         return `<p>${String(data.text ?? "")}</p>`;
       }).join("");
     } catch { /* Legacy posts may contain HTML rather than EditorJS JSON. */ }
-    setHtml(DOMPurify.sanitize(markup, { ALLOWED_TAGS: ["p", "br", "strong", "b", "i", "em", "u", "a", "h2", "h3", "h4", "ul", "ol", "li", "blockquote", "cite", "pre", "code"], ALLOWED_ATTR: ["href", "title"] }));
-  }, [content]);
+  const html = sanitizeHtml(markup, { allowedTags: ['p','br','strong','b','i','em','u','a','h2','h3','h4','ul','ol','li','blockquote','cite','pre','code'], allowedAttributes: { a: ['href','title'] }, allowedSchemes: ['https','http','mailto'] });
   return <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: html }} />;
 }

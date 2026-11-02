@@ -1,0 +1,1 @@
+export default function Loading() { return <div className="container py-20" role="status" aria-live="polite"><div className="h-8 w-64 animate-pulse rounded bg-slate-200" /><p className="mt-5 text-sm text-slate-500">Loading page…</p></div>; }

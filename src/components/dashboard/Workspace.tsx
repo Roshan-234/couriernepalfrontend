@@ -22,6 +22,7 @@ export default function Workspace({
         ["Shipments", "/admin/shipments"],
         ["Users", "/admin/users"],
         ["Pricing", "/admin/pricing"],
+        ["Website content", "/admin/content"],
         ["Settings", "/admin/settings"],
       ]
     : [

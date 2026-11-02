@@ -23,7 +23,7 @@ export default function BlogPagination({
   };
 
   const getVisiblePages = () => {
-    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+    const pages = Array.from({ length: Math.min(totalPages, 7) }, (_, i) => i + 1);
 
     if (!showEllipsis) return pages;
 
@@ -32,13 +32,15 @@ export default function BlogPagination({
     }
 
     if (currentPage >= totalPages - 2) {
-      return [1, null, ...pages.slice(totalPages - 5)];
+      return [1, null, ...Array.from({ length: 5 }, (_, i) => totalPages - 4 + i)];
     }
 
     return [
       1,
       null,
-      ...pages.slice(currentPage - 2, currentPage + 1),
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
       null,
       totalPages,
     ];

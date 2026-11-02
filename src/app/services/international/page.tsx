@@ -1,4 +1,4 @@
-import ServiceDetail from "@/components/common/ServiceDetail";
-export default function Page() {
-  return <ServiceDetail slug="international" />;
-}
+import ManagedPage from '@/components/common/ManagedPage';
+import { pageMetadata } from '@/lib/content';
+export const generateMetadata = () => pageMetadata('/services/international');
+export default function Page() { return <ManagedPage path="/services/international" />; }

@@ -23,6 +23,7 @@ export default function Footer() {
               ["Track a shipment", "/tracking"],
               ["Get a quote", "/pricing"],
               ["About us", "/about"],
+              ["Privacy", "/privacy"],
             ].map(([text, href]) => (
               <Link key={href} href={href}>
                 {text}

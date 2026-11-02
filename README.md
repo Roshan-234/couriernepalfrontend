@@ -1,8 +1,10 @@
-# Moonlight Freight frontend
+# Moonlight Freight / Courier Nepal frontend
 
-Next.js / React frontend for the Flask Courier Nepal backend.
+Next.js 15 and React frontend for **couriernepal.com**, using the Moonlight Freight navy, teal and yellow identity.
 
-## Run locally
+## Setup and deployment
+
+Start with [DEPLOYMENT.md](DEPLOYMENT.md). It includes Windows local setup, administrator creation, cPanel Node/Python configuration, MySQL migrations, Redis rate limits, SMTP, SEO, analytics and rollback.
 
 ```powershell
 npm ci
@@ -10,42 +12,31 @@ Copy-Item .env.example .env.local
 npm run dev
 ```
 
-Start Flask on port 5000, then open http://localhost:3000.
+Start the backend on port 5000 first. Open http://localhost:3000. Browser requests use the same-origin `/api` proxy; configure the server-only `BACKEND_URL` before build and start. cPanel uses `app.js` with the production variables documented in the guide. This app requires a Node server and does not support static export.
+
+## Features
+
+- Responsive public pages and customer/admin workspaces.
+- Public page text, service descriptions and SEO fields from the database; edit at `/admin/content` with stale-edit conflict protection.
+- Shipment booking, paginated history, tracking, profile and revocable sessions connected to Flask.
+- Admin pricing and account controls; server-calculated shipping estimates.
+- Server-rendered articles and sanitized rich text, canonical links, sitemap, robots and organization metadata.
+- Optional consent-based Google Analytics. Set a real `GA_MEASUREMENT_ID`; follow the stream configuration instructions in the deployment guide.
+- HttpOnly cookie authentication, CSRF protection, server-only backend key, CSP nonces and security headers.
+
+## Verification
 
 ```powershell
 npm run lint
-npm run typecheck
 npm run build
-npm start
+npm run typecheck
+npm audit --omit=dev
 ```
 
-BACKEND_URL is the server-only backend origin, without /api. Set it before building and running Next.js. Browser calls use /api; the rewrite forwards requests and cookies to Flask. Do not configure an absolute browser API URL. Deploy Next.js as a server, not a static export.
+GitHub Actions runs lint, build and type checks. On constrained Windows hosts, set `NEXT_LOW_MEMORY_BUILD=1`. Set `NEXT_DIST_DIR` consistently for both build and start when using an alternate build directory.
 
-## Changes
+The lockfile includes compatible security updates. Targeted overrides keep Next.js on its current major while updating PostCSS and the typography selector parser. Revisit these overrides when upgrading their parent packages. As of 2026-11-02, the production dependency audit is clean. The full audit reports a moderate minimatch denial-of-service advisory in lint tooling; its available fix changes the major API, so it is not forced into ESLint. Lint only trusted project sources and update the tooling when compatible releases are available.
 
-- Responsive public website, consistent typography, accessible navigation, service, tracking, pricing and account screens.
-- Shared HttpOnly cookie authentication, CSRF headers and single-flight refresh.
-- Real shipment booking, history, details and tracking; no simulated success.
-- Customer/admin workspaces backed by API data.
-- Contact submissions, profile name updates and live pricing estimates.
-- Fixed broken blog syntax, pagination, async route params and request contracts.
-- Removed duplicate API handlers that shadowed the backend proxy.
+## Launch requirements
 
-## Limits
-
-Admin settings no longer pretend to persist unsupported configuration. Deployment settings are managed on the server. The user directory supports account status changes with server-side authorization. Online estimates require pricing rules. Password-reset email requires SMTP. External carriers and production services were not tested locally.
-
-Legacy unused components retain image-optimization warnings; EditorJS content is rendered through a sanitized block renderer. Lint has no errors. The rich-text image-upload tool is omitted because the backend has no upload endpoint.
-
-## Functional update
-
-- Next.js and eslint-config-next updated to 15.5.28; package-lock.json included.
-- Admin shipping-rate editor at `/admin/pricing` connects to the public quote calculator.
-- Customer session controls at `/dashboard/sessions`; account status controls at `/admin/users`.
-- Profile changes update the shared account state immediately; login/logout clears account query caches.
-- Blog content supports EditorJS JSON and sanitizes legacy HTML with DOMPurify.
-- GitHub Actions run lint, production build, and TypeScript checks.
-
-On constrained Windows environments, use `NEXT_LOW_MEMORY_BUILD=1` to build without the webpack worker and with one static generation worker. Optional `NEXT_DIST_DIR=.next-verified` isolates build output; use the same directory variable for build and start. Default hosting still uses `.next`.
-
-Verified locally: production build, TypeScript, lint (no errors; five legacy image warnings), and HTTP integration through the production Next.js proxy to Flask. Production database, SMTP and carrier connections are separate deployment checks.
+Review starter content and privacy wording, configure real rates, confirm cPanel runtime support, and verify HTTPS, SMTP and live carrier integrations. Production hosting and analytics credentials are not included. Account form labels and operational interface structure remain code-managed; business records and public editorial content are database-managed.
