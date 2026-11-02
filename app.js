@@ -1,4 +1,8 @@
 // cPanel/Passenger startup. Run npm run build before starting this app.
+const [major, minor, patch] = process.versions.node.split('.').map(Number);
+if (major !== 24 || minor < 22 || (minor === 22 && patch < 2)) {
+  throw new Error('Use Node.js 24.22.2 or a newer 24.x release; see DEPLOYMENT.md.');
+}
 const http = require('node:http');
 const next = require('next');
 require('@next/env').loadEnvConfig(__dirname, false);
