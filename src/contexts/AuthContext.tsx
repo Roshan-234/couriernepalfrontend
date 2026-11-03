@@ -6,7 +6,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import api from "@/lib/api";
+import api, { csrfToken } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 export interface User {
   id: number;
@@ -50,6 +50,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ["token", "access_token", "refresh_token", "user"].forEach((key) =>
       localStorage.removeItem(key),
     );
+    // The session tokens are HttpOnly, but the CSRF cookies that accompany
+    // them are readable and only exist once signed in. Checking them first
+    // saves every anonymous visitor — and every crawler — a request that can
+    // only ever answer 401. It is a hint, not a decision: the server still
+    // authorises everything.
+    if (!csrfToken("csrf_access_token") && !csrfToken("csrf_refresh_token")) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
     api
       .get("/auth/profile")
       .then(({ data }) => setUser(normalize(data)))

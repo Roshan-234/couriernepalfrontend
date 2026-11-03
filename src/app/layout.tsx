@@ -24,16 +24,15 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Courier & Cargo Service in Nepal | Moonlight Freight, Kathmandu',
+    default: 'International Courier & Cargo from Nepal | Moonlight Freight',
     template: '%s | Moonlight Freight',
   },
-  // Says where the company is, what it moves and where to — the previous
-  // wording mentioned none of those, so it matched almost nothing a customer
-  // would type.
+  // International leads, because that is the business. Domestic delivery is
+  // the feeder network underneath it and is named last.
   description:
-    'Door-to-door courier and international cargo from Kathmandu. Domestic delivery '
-    + 'to all 77 districts of Nepal, air and sea freight worldwide, cash on delivery '
-    + 'for online sellers, and live parcel tracking.',
+    'Air and sea freight, express courier and excess baggage from Kathmandu to the '
+    + 'world, plus customs-cleared imports into Nepal. Door-to-door to the USA, UK, '
+    + 'Australia, the Gulf and beyond, with delivery onward to all 77 districts.',
   applicationName: 'Moonlight Freight',
   authors: [{ name: BUSINESS.legalName, url: siteUrl }],
   openGraph: {

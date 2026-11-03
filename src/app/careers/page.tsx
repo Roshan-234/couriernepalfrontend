@@ -12,7 +12,9 @@ import { BUSINESS, OPENING_HOURS_TEXT } from "@/lib/seo/business";
 
 const PATH = "/careers";
 
-const TITLE = "Careers at Moonlight Freight | Jobs in courier and logistics, Kathmandu";
+// The layout template appends the brand, so naming it here too would
+// print "Moonlight Freight" twice in one title.
+const TITLE = "Careers | Jobs in courier and logistics, Kathmandu";
 const DESCRIPTION =
   "There are no vacancies advertised at Moonlight Freight right now. Speculative applications are welcome — here is what we look for and how to apply.";
 

@@ -21,7 +21,7 @@ const DESCRIPTION =
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
-    title: "Courier Delivery to All 77 Districts of Nepal | Moonlight Freight",
+    title: "Courier Delivery to All 77 Districts of Nepal",
     description: DESCRIPTION,
     path: "/courier",
   });

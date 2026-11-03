@@ -19,6 +19,11 @@ export default async function JsonLd({ data }: { data: unknown | unknown[] }) {
           key={index}
           type="application/ld+json"
           nonce={nonce}
+          // The nonce exists only in the server-rendered HTML — React drops
+          // it on the client, which otherwise logs a hydration mismatch it
+          // says it "won't patch up". Harmless here: CSP is enforced when the
+          // document is parsed, which has already happened by then.
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: serialize(block) }}
         />
       ))}

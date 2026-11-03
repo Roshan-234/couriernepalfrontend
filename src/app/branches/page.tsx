@@ -21,7 +21,7 @@ const DESCRIPTION =
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
-    title: "Branches and Pickup Points in Nepal | Moonlight Freight",
+    title: "Branches and Pickup Points in Nepal",
     description: DESCRIPTION,
     path: "/branches",
   });

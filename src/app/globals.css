@@ -151,3 +151,88 @@ select {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ── Surfaces and depth ───────────────────────────────────────────────────
+   The site was flat white panels on a near-white page, which gives the eye
+   nothing to follow. These add a small, consistent set of surfaces so a
+   section can sit forward or recede without inventing new colours. */
+
+.surface-deep {
+  background:
+    radial-gradient(ellipse 80% 60% at 15% -10%, #4a4890 0%, transparent 60%),
+    radial-gradient(ellipse 70% 70% at 95% 10%, #10697a 0%, transparent 55%),
+    var(--brand-navy);
+  color: white;
+}
+.surface-tint { background: linear-gradient(180deg, #f3f7fb 0%, var(--background) 100%); }
+
+.card-lift {
+  background: white;
+  border: 1px solid #e6e8f0;
+  border-radius: 1rem;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+  border-color: var(--brand-teal);
+  box-shadow: 0 18px 40px -24px #38377255;
+}
+
+/* A quiet label above a heading. */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--brand-teal);
+}
+.kicker::before {
+  content: "";
+  width: 1.5rem;
+  height: 2px;
+  background: var(--brand-yellow);
+}
+.surface-deep .kicker { color: #8fd3e2; }
+
+/* Destination chips on the corridor grid. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .3rem .7rem;
+  border-radius: 999px;
+  background: #eef6f8;
+  color: #0f5f6e;
+  font-size: .78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.surface-deep .chip { background: #ffffff1f; color: #d6eef4; }
+
+/* Section rhythm, so pages stop feeling like one long column. */
+.section { padding-block: clamp(3.5rem, 7vw, 6rem); }
+.section-tight { padding-block: clamp(2.5rem, 5vw, 4rem); }
+
+/* Headline scale with a sensible floor on small screens. */
+.display {
+  font-family: "Plus Jakarta Sans", "Noto Sans Devanagari", "Nirmala UI", sans-serif;
+  font-size: clamp(2.3rem, 6vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+.display-sm {
+  font-family: "Plus Jakarta Sans", "Noto Sans Devanagari", "Nirmala UI", sans-serif;
+  font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-lift { transition: none; }
+  .card-lift:hover { transform: none; }
+}

@@ -5,11 +5,15 @@ import { usePathname } from "next/navigation";
 import { FaArrowRight, FaBars, FaTimes } from "react-icons/fa";
 import Brand from "@/components/layout/Brand";
 import { useAuth } from "@/contexts/AuthContext";
+// International first: it is what the company does and what visitors come
+// looking for. "About us" moves to the footer to make room without crowding
+// the bar on a phone.
 const links = [
+  ["Ship abroad", "/shipping"],
   ["Services", "/services"],
-  ["About us", "/about"],
+  ["Inside Nepal", "/courier"],
   ["Pricing", "/pricing"],
-  ["Track shipment", "/tracking"],
+  ["Track", "/tracking"],
   ["Contact", "/contact"],
 ];
 export default function Navbar() {

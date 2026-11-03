@@ -18,9 +18,9 @@ const STATIC_ROUTES: Array<[path: string, priority: number, freq: Entry['changeF
   ['/', 1.0, 'weekly'],
   ['/tracking', 0.9, 'monthly'],
   ['/pricing', 0.9, 'weekly'],
-  ['/services', 0.8, 'monthly'],
-  ['/courier', 0.8, 'weekly'],
-  ['/shipping', 0.8, 'weekly'],
+  ['/shipping', 0.95, 'weekly'],
+  ['/services', 0.9, 'monthly'],
+  ['/courier', 0.7, 'weekly'],
   ['/business', 0.8, 'monthly'],
   ['/branches', 0.7, 'monthly'],
   ['/contact', 0.7, 'monthly'],
@@ -97,12 +97,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // The two location clusters. These are static data, so they are always
   // listed even when the backend is unreachable.
+  // The domestic network is the feeder under the international business
+  // rather than the headline, so districts sit below the corridors.
   const districts: Entry[] = DISTRICTS.map((district) => ({
     url: `${siteUrl}/courier/${district.slug}`,
     lastModified: now,
     changeFrequency: 'monthly',
-    // Valley and city districts are where the demand is.
-    priority: district.zone === 'valley' ? 0.8 : district.zone === 'cities' ? 0.7 : 0.5,
+    priority: district.zone === 'valley' ? 0.6 : district.zone === 'cities' ? 0.5 : 0.4,
   }));
 
   const corridors: Entry[] = CORRIDORS.flatMap((corridor) => [
@@ -110,13 +111,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${siteUrl}/shipping/nepal-to-${corridor.slug}`,
       lastModified: now,
       changeFrequency: 'monthly' as const,
-      priority: 0.7,
+      // International is the core of the business; these lanes are the
+      // pages that should rank.
+      priority: 0.9,
     },
     {
       url: `${siteUrl}/shipping/to-nepal-from-${corridor.slug}`,
       lastModified: now,
       changeFrequency: 'monthly' as const,
-      priority: 0.7,
+      priority: 0.85,
     },
   ]);
 

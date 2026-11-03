@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const district = districtBySlug((await params).district);
   if (!district) {
     return buildMetadata({
-      title: "District not found | Moonlight Freight",
+      title: "District not found",
       description: "That district page does not exist.",
       path: "/courier",
       noindex: true,
@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const copy = districtCopy(district);
   return buildMetadata({
-    title: `Courier and Parcel Delivery in ${district.name} | Moonlight Freight`,
+    title: `Courier and Parcel Delivery in ${district.name}`,
     description: copy.summary,
     path: `/courier/${district.slug}`,
   });

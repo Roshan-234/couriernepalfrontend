@@ -9,7 +9,7 @@ export interface SitePage {
   version: number; updated_at: string;
 }
 export const siteUrl = (process.env.SITE_URL || 'https://couriernepal.com').replace(/\/$/, '');
-export const backendUrl = (process.env.BACKEND_URL || 'http://127.0.0.1:5000').replace(/\/$/, '');
+export const backendUrl = (process.env.BACKEND_ORIGIN || process.env.BACKEND_URL || 'http://127.0.0.1:5000').replace(/\/$/, '');
 export const backendHeaders = () => ({ 'X-Backend-Key': process.env.BACKEND_PROXY_SECRET || '' });
 
 // React's request-scoped cache shares one lookup between metadata and page rendering.
@@ -60,12 +60,21 @@ export function buildMetadata(options: {
   modifiedTime?: string | null;
 }): Metadata {
   const image = options.image || DEFAULT_OG_IMAGE;
+  // The root layout's title template already appends the brand. Pages that
+  // spell it out as well render it twice, which eats the ~60 characters a
+  // result actually shows. Strip it here rather than relying on every author
+  // to remember.
+  const title = options.title.replace(/\s*\|\s*Moonlight Freight\s*$/i, '').trim();
+  // A title that still names the brand after that — "About Moonlight
+  // Freight", say — would have it appended a second time by the template.
+  // `absolute` opts that page out of the template entirely.
+  const titleField = /moonlight freight/i.test(title) ? { absolute: title } : title;
   return {
-    title: options.title,
+    title: titleField,
     description: options.description,
     alternates: { canonical: options.path },
     openGraph: {
-      title: options.title,
+      title,
       description: options.description,
       url: options.path,
       type: options.type || 'website',
@@ -79,7 +88,7 @@ export function buildMetadata(options: {
       // A large card earns far more of the timeline than the square summary
       // the site was asking for.
       card: 'summary_large_image',
-      title: options.title,
+      title,
       description: options.description,
       images: [image],
     },
