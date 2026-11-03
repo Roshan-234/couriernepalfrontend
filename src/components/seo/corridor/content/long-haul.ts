@@ -471,7 +471,7 @@ export const LONG_HAUL_CORRIDORS: CorridorContent[] = [
       watchOut: {
         title: "Australian biosecurity is the strictest border you will ship into",
         body:
-          "Timber, bamboo, cane, rattan, dried flowers, seeds, straw packing material, food and anything of animal origin are all inspected, and any of them can trigger mandatory treatment at the importer's cost or destruction if undeclared. Even packing material counts — straw and untreated wooden crates are a problem in their own right. The rule that works is simple: describe the material of every item on the invoice, declare anything organic, and let us tell you what needs treating before it ships rather than after it lands.",
+          "Timber, bamboo, cane, rattan, dried flowers, seeds, straw packing material, food and anything of animal origin are all inspected, and any of them can trigger mandatory treatment at the importer's cost or destruction if undeclared. Even packing material counts — straw and untreated wooden crates are a problem in their own right. The rule that works is simple: describe the material of every item on the invoice, declare anything organic, and let us tell you what needs treating before it ships rather than after it lands. Australia publishes its import conditions in BICON, timber packaging has to meet ISPM 15, and straw is simply not accepted as packing material — anything non-compliant is treated, re-exported or destroyed at the importer's cost.",
       },
       arrival: {
         title: "Inspection first, delivery second",

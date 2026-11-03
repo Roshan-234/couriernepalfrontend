@@ -53,7 +53,7 @@ export const ASIA_CORRIDORS: CorridorContent[] = [
       watchOut: {
         title: "Quarantine is a hard stop, not a negotiation",
         body:
-          "Japan refuses meat and meat products at import — including dried, cured and vacuum-packed — along with many dairy items, fresh produce, seeds and untreated plant material. Quantity does not matter and 'it is for personal use' does not help. Commercially packaged dry spices, lentils, tea and sealed snacks are normally fine, provided the invoice describes the ingredients accurately rather than saying 'food'. A vague declaration on a food parcel is what turns a routine import into a destroyed one.",
+          "Japan refuses meat and meat products at import — including dried, cured and vacuum-packed — along with many dairy items, fresh produce, seeds and untreated plant material. Quantity does not matter and 'it is for personal use' does not help. Commercially packaged dry spices, lentils, tea and sealed snacks are normally fine, provided the invoice describes the ingredients accurately rather than saying 'food'. A vague declaration on a food parcel is what turns a routine import into a destroyed one. This is not a slap on the wrist either: illegal animal or plant imports carry fines running to millions of yen and, in the worst cases, a prison term.",
       },
       arrival: {
         title: "The address has to be exactly right",
@@ -331,7 +331,7 @@ export const ASIA_CORRIDORS: CorridorContent[] = [
       watchOut: {
         title: "Food is screened, and commercial food needs more than an invoice",
         body:
-          "Malaysia screens imported food and agricultural products, and a parcel declared simply as 'food' invites exactly the inspection you do not want. Describe the contents at ingredient level on the invoice. If you are shipping commercially rather than sending a family parcel, food products generally need certification arranged before import — halal certification among them for the categories that require it — and that is a step to resolve before the goods travel, not at the border.",
+          "Malaysia screens imported food and agricultural products, and a parcel declared simply as 'food' invites exactly the inspection you do not want. Describe the contents at ingredient level on the invoice. If you are shipping commercially rather than sending a family parcel, food products generally need certification arranged before import — halal certification among them for the categories that require it — and that is a step to resolve before the goods travel, not at the border. Screening is run by MAQIS, and halal certification is mandatory for meat and animal-based products specifically rather than for food in general — by a body JAKIM recognises, not any certificate at all.",
       },
       arrival: {
         title: "Factory hostels and plantation addresses",

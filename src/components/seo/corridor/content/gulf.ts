@@ -54,7 +54,7 @@ export const GULF_CORRIDORS: CorridorContent[] = [
       watchOut: {
         title: "Medicines that are ordinary here are controlled there",
         body:
-          "This is the one to read twice. The UAE controls a range of preparations that sell over the counter in Nepal, including some common painkillers, cough and cold remedies and sedatives. Sending one without prior approval is not a parcel problem, it is a problem for the person receiving it. Tell us the exact name of the medicine and send the prescription before you book, and we will say whether it can travel and what approval it needs. Do not put medicine in a box unannounced.",
+          "This is the one to read twice. The UAE controls a range of preparations that sell over the counter in Nepal, including some common painkillers, cough and cold remedies and sedatives. Sending one without prior approval is not a parcel problem, it is a problem for the person receiving it. Tell us the exact name of the medicine and send the prescription before you book, and we will say whether it can travel and what approval it needs. Do not put medicine in a box unannounced. The UAE publishes its controlled and banned medicines list, and the preparations that catch people out are the ordinary ones — codeine, pseudoephedrine and pholcodine turn up in common painkillers and cough syrups sold over the counter here.",
       },
       arrival: {
         title: "Delivering to labour accommodation",
@@ -337,7 +337,7 @@ export const GULF_CORRIDORS: CorridorContent[] = [
       watchOut: {
         title: "The prohibited list is long, and commercial goods need conformity first",
         body:
-          "Alcohol in any form, pork products, and certain religious and printed material are prohibited outright, and the rules are enforced rather than nominal. Separately, and this is the one that catches first-time commercial shippers: many products need a conformity certificate arranged before they arrive, not after. A consignment that lands without it does not get a warning, it gets stuck. If you are shipping anything commercial, talk to us about conformity before you manufacture, let alone before you book.",
+          "Alcohol in any form, pork products, and certain religious and printed material are prohibited outright, and the rules are enforced rather than nominal. Separately, and this is the one that catches first-time commercial shippers: many products need a conformity certificate arranged before they arrive, not after. A consignment that lands without it does not get a warning, it gets stuck. If you are shipping anything commercial, talk to us about conformity before you manufacture, let alone before you book. Conformity now runs through the SABER platform, which replaced the older SASO certificates, and customs wants a valid certificate rather than a pending one.",
       },
       arrival: {
         title: "The last few hundred kilometres",
