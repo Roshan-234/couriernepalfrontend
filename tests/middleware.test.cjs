@@ -56,3 +56,29 @@ test('public HTML gets a distinct nonce and disallows eval in production', () =>
   assert.doesNotMatch(policy, /unsafe-eval/);
   assert.notEqual(policy, second.headers.get('Content-Security-Policy'));
 });
+
+test('the API proxy forwards the visitor address and overwrites a forged one', () => {
+  // Flask sees this proxy as the peer on every request, so without a
+  // forwarded address its rate limits become one bucket shared by every
+  // visitor. The value must come from the hosting layer, never the caller.
+  const request = new NextRequest('https://couriernepal.com/api/health', {
+    headers: {
+      'x-forwarded-for': '203.0.113.9, 10.0.0.1',
+      'X-Real-Client-IP': 'attacker-supplied',
+    },
+  });
+  const response = middleware({ BACKEND_PROXY_SECRET: 'test-only-server-key' })(request);
+  assert.equal(
+    response.headers.get('x-middleware-request-x-real-client-ip'),
+    '203.0.113.9',
+    'the leftmost forwarded address is the visitor',
+  );
+});
+
+test('the API proxy falls back to x-real-ip when no chain is present', () => {
+  const request = new NextRequest('https://couriernepal.com/api/health', {
+    headers: { 'x-real-ip': '198.51.100.7' },
+  });
+  const response = middleware({ BACKEND_PROXY_SECRET: 'k' })(request);
+  assert.equal(response.headers.get('x-middleware-request-x-real-client-ip'), '198.51.100.7');
+});

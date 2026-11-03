@@ -2,8 +2,15 @@ import './globals.css';
 import { headers } from 'next/headers';
 import type { Metadata } from 'next';
 import Analytics from '@/components/common/Analytics';
-import { siteUrl } from '@/lib/content';
-export const dynamic = 'force-dynamic';
+import JsonLd from '@/components/seo/JsonLd';
+import { siteUrl, DEFAULT_OG_IMAGE } from '@/lib/content';
+import { localBusiness, website } from '@/lib/seo/jsonld';
+import { BUSINESS } from '@/lib/seo/business';
+
+// Rendering is dynamic regardless of this flag, because the layout reads the
+// per-request CSP nonce from headers(). The lever that actually matters for
+// time-to-first-byte is caching the backend content fetch, which getPages
+// now does — see CONTENT_REVALIDATE_SECONDS.
 import '@fontsource/inter';
 import '@fontsource/inter/600.css';
 import '@fontsource/inter/700.css';
@@ -16,19 +23,39 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: 'Moonlight Freight | Courier Nepal', template: '%s | Moonlight Freight' },
-  description: 'Courier and freight services from Nepal. Book shipments and follow delivery updates with Moonlight Freight.',
-  openGraph: { siteName: 'Moonlight Freight', locale: 'en_NP', type: 'website', images: ['/images/moonlight-freight-logo.jpg'] },
+  title: {
+    default: 'Courier & Cargo Service in Nepal | Moonlight Freight, Kathmandu',
+    template: '%s | Moonlight Freight',
+  },
+  // Says where the company is, what it moves and where to — the previous
+  // wording mentioned none of those, so it matched almost nothing a customer
+  // would type.
+  description:
+    'Door-to-door courier and international cargo from Kathmandu. Domestic delivery '
+    + 'to all 77 districts of Nepal, air and sea freight worldwide, cash on delivery '
+    + 'for online sellers, and live parcel tracking.',
+  applicationName: 'Moonlight Freight',
+  authors: [{ name: BUSINESS.legalName, url: siteUrl }],
+  openGraph: {
+    siteName: 'Moonlight Freight',
+    locale: 'en_NP',
+    type: 'website',
+    images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: 'Moonlight Freight' }],
+  },
+  twitter: { card: 'summary_large_image', images: [DEFAULT_OG_IMAGE] },
+  robots: { index: true, follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
   verification: { google: process.env.GOOGLE_SITE_VERIFICATION || undefined },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const nonce = (await headers()).get('x-nonce') || '';
-  const organization = { '@context': 'https://schema.org', '@type': 'Organization', name: 'Moonlight Freight Pvt. Ltd.', url: siteUrl, logo: siteUrl + '/images/moonlight-freight-logo.jpg' };
   return (
     <html lang="en" className="h-full scroll-smooth antialiased" suppressHydrationWarning>
       <body className="h-full">
-        <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(organization).replace(/</g, '\u003c') }} />
+        {/* The business and the site, declared once and referenced by @id
+            from the Service, Article and Breadcrumb markup on inner pages. */}
+        <JsonLd data={[localBusiness(siteUrl), website(siteUrl)]} />
         <Suspense fallback={null}><Analytics id={process.env.GA_MEASUREMENT_ID} nonce={nonce} siteUrl={siteUrl} /></Suspense>
         <Suspense fallback={<LoadingSpinner />}>
           <RootLayoutClient>{children}</RootLayoutClient>

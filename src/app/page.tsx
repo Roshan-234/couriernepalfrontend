@@ -17,5 +17,20 @@ export default async function Home() {
   <section className="border-b border-slate-200 bg-white"><div className="container grid items-center gap-6 py-8 md:grid-cols-[1fr_1.6fr]"><h2 className="text-xl font-bold">Where is your parcel?</h2><form action="/tracking" className="flex flex-col gap-3 sm:flex-row"><label htmlFor="home-tracking" className="sr-only">Tracking number</label><input id="home-tracking" name="id" required maxLength={100} className="field min-w-0 flex-1" placeholder="Enter your tracking number" /><button className="action">Track shipment <FaArrowRight /></button></form></div></section>
   <section className="container py-20"><div className="mb-10 flex flex-wrap items-end justify-between gap-5"><h2 className="text-3xl font-bold">One partner. Every delivery.</h2><Link href="/services" className="font-semibold text-teal-700">View all services →</Link></div><div className="grid gap-5 md:grid-cols-3">{services.map(service => <Link href={service.path} key={service.path} className="panel transition hover:-translate-y-1 hover:border-teal-700 hover:shadow-lg"><FaBoxOpen className="mb-8 text-3xl text-teal-700" /><h3 className="text-xl font-bold">{service.title}</h3><p className="mt-4 text-sm leading-7 text-slate-500">{service.intro}</p><span className="mt-7 block text-sm font-semibold">Explore service →</span></Link>)}</div></section>
   <section className="container pb-20"><div className="rounded-3xl bg-[#383772] p-8 text-white md:p-14"><h2 className="mb-10 text-3xl font-bold">Your next delivery, step by step.</h2><div className="grid gap-8 md:grid-cols-3">{page.sections.map((section,i) => <div key={i}><span className="text-sm text-[#ffda16]">{String(i+1).padStart(2,'0')}</span><h3 className="mt-4 text-xl font-semibold">{section.heading}</h3><p className="mt-3 leading-7 text-slate-300">{section.body}</p></div>)}</div><Link href="/contact" className="mt-10 inline-block font-semibold text-[#ffda16]">Let us plan your delivery →</Link></div></section>
+  {/* The coverage block. Besides answering "do you deliver to my district",
+      this is the homepage's link into the district and corridor clusters —
+      without it those pages have no route in from the strongest page. */}
+  <section className="container pb-20"><div className="grid gap-5 md:grid-cols-2">
+   <Link href="/courier" className="panel transition hover:-translate-y-1 hover:border-teal-700 hover:shadow-lg">
+    <h2 className="text-2xl font-bold">Delivering to all 77 districts</h2>
+    <p className="mt-4 leading-7 text-slate-600">From next-day across the Kathmandu Valley to scheduled runs into Humla, Dolpa and Mustang. Find your district and what to expect.</p>
+    <span className="mt-6 block font-semibold text-teal-700">See district coverage →</span>
+   </Link>
+   <Link href="/shipping" className="panel transition hover:-translate-y-1 hover:border-teal-700 hover:shadow-lg">
+    <h2 className="text-2xl font-bold">Sending abroad, or home to Nepal</h2>
+    <p className="mt-4 leading-7 text-slate-600">Air and sea freight to the countries Nepalis live and trade in — and parcels from family overseas delivered to the door here.</p>
+    <span className="mt-6 block font-semibold text-teal-700">See international destinations →</span>
+   </Link>
+  </div></section>
  </div>;
 }

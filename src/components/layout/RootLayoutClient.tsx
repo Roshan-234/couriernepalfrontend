@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ToastProvider } from "@/components/kit";
 export default function RootLayoutClient({
   children,
 }: {
@@ -21,16 +22,18 @@ export default function RootLayoutClient({
   return (
     <QueryClientProvider client={client}>
       <AuthProvider>
-        <div className="flex min-h-screen flex-col">
-          <a href="#main-content" className="skip-link">
-            Skip to content
-          </a>
-          {!workspace && <Navbar />}
-          <main id="main-content" className="min-w-0 flex-1">
-            {children}
-          </main>
-          {!workspace && <Footer />}
-        </div>
+        <ToastProvider>
+          <div className="flex min-h-screen flex-col">
+            <a href="#main-content" className="skip-link">
+              Skip to content
+            </a>
+            {!workspace && <Navbar />}
+            <main id="main-content" className="min-w-0 flex-1">
+              {children}
+            </main>
+            {!workspace && <Footer />}
+          </div>
+        </ToastProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
