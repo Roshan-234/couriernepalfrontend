@@ -47,7 +47,7 @@ export const NEIGHBOUR_CORRIDORS: CorridorContent[] = [
         "A packing list showing what is in each carton",
         "A certificate of origin where preference under the Nepal–India trade treaty is being claimed",
         "The Indian consignee's GSTIN for anything commercial",
-        "An e-way bill for the onward road movement inside India, where the consignment value requires one",
+        "An e-way bill for the road movement inside India after customs clearance, where the consignment value requires one. It is raised by the importer against their own GSTIN, not by the sender in Nepal, and cargo merely transiting India is treated differently - confirm which applies with your consignee",
       ],
       watchOut: {
         title: "The border sets the timetable, not the distance",
@@ -177,7 +177,7 @@ export const NEIGHBOUR_CORRIDORS: CorridorContent[] = [
         air: "Air cargo routes through Guangzhou, Chengdu, Kunming or Hong Kong and feeds the Chinese domestic network from there. This is the reliable option and the one we recommend whenever a deadline exists.",
         surfaceLabel: "Overland freight",
         surface:
-          "Two crossings link the countries: Rasuwagadhi–Kerung and Tatopani–Zhangmu. Both climb through the high Himalaya, and both are exposed to landslides, snow and short-notice closure. Overland is cheaper per kilo and far less predictable.",
+          "Three crossings link the countries: Rasuwagadhi–Kerung (Gyirong), Tatopani–Zhangmu and Korala in Upper Mustang. All three climb through the high Himalaya, and all three are exposed to landslides, snow, flood damage and closure at short notice — Tatopani has been disrupted since the 2015 earthquake, and the Rasuwagadhi road has been cut by flooding more than once. Treat none of them as reliably open: overland is cheaper per kilo and genuinely unpredictable, so ask us which crossing is working before you plan around one.",
         speed:
           "By air, days rather than weeks. Overland is honestly unpredictable: a clear run is quick for the distance, and a closed crossing is not a delay of hours but of days or longer. We will tell you the current state of the border when you book rather than guess at it here.",
       },
@@ -241,7 +241,7 @@ export const NEIGHBOUR_CORRIDORS: CorridorContent[] = [
         air: "Consolidated air freight out of Guangzhou into Kathmandu. The option importers fall back on when the land route is shut or when a season is about to start without the stock.",
         surfaceLabel: "Overland and sea",
         surface:
-          "Overland through Kerung into Rasuwagadhi when the crossing is open, which is the normal route for volume. For very large, non-urgent consignments, sea to Kolkata or Haldia followed by road into Nepal is cheaper again and slower again.",
+          "Overland through Kerung into Rasuwagadhi carries the volume whenever that crossing is running, with Korala taking limited cargo and Tatopani largely out of use. The Himalayan roads are repeatedly cut by landslides and flooding, so the working crossing changes — we confirm which one is open at the time you book. For very large, non-urgent consignments, sea to Kolkata or Haldia followed by road into Nepal is cheaper again and slower again.",
         speed:
           "Overland through Kerung is reasonable when the border is running normally; sea-and-road is a multi-week commitment; air is days plus clearance. We will not put a number on the overland option, because the honest answer depends on a mountain road and on the queue at the land port on the day.",
       },

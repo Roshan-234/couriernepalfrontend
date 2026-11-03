@@ -107,6 +107,12 @@ export default function OutboundCorridorPage({
           sure which category your goods fall into, send us a description first — it is far cheaper
           to answer that question in Kathmandu than at the destination.
         </p>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600">
+          <strong className="font-semibold text-slate-800">Rules change.</strong> Customs
+          requirements, restricted categories and border openings are revised by the authorities
+          at both ends, sometimes at short notice. Treat this page as orientation and confirm the
+          current position with us when you book — that confirmation is what we stand behind.
+        </p>
       </Section>
 
       <div className="mt-14">

@@ -116,6 +116,12 @@ export default function InboundCorridorPage({
           clearance takes and what gets charged. Send it to us before you ship and we will tell you
           what to expect rather than leaving your family to find out at the counter.
         </p>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600">
+          <strong className="font-semibold text-slate-800">Rules change.</strong> Customs
+          requirements, restricted categories and border openings are revised by the authorities
+          at both ends, sometimes at short notice. Treat this page as orientation and confirm the
+          current position with us when you book — that confirmation is what we stand behind.
+        </p>
       </Section>
 
       <Section title={`Questions about sending from ${country}`} kicker="FAQ">

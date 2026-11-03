@@ -160,7 +160,7 @@ export const ASIA_CORRIDORS: CorridorContent[] = [
       eyebrow: "Nepal to South Korea",
       heading: "Shipping from Nepal to South Korea",
       lede:
-        "There is one detail on this lane that nothing else substitutes for: Korea asks an individual recipient for a personal customs clearance code before a parcel imported for personal use is released. Get it from the person you are sending to before you book, and the rest of this corridor is straightforward.",
+        "There is one detail on this lane worth getting right before anything else: Korea identifies an individual recipient by a personal customs clearance code when a parcel is imported for personal use. Get it from the person you are sending to before you book, and the rest of this corridor is straightforward.",
       serviceType: "International air freight and express courier",
       audience: {
         title: "EPS workers in the industrial towns, and students in Seoul",
@@ -192,7 +192,7 @@ export const ASIA_CORRIDORS: CorridorContent[] = [
       watchOut: {
         title: "No clearance code, no release",
         body:
-          "Korea asks individual recipients for a personal customs clearance code rather than their resident registration number when goods are imported for personal use. It is free, the recipient applies for it themselves, and it takes very little time — but a shipment that arrives without one waits at clearance until it is produced. Ask the person you are sending to for their code at the same time as you ask for their address. It is the most common reason a parcel to Korea sits still.",
+          "Korea identifies individual recipients by a personal customs clearance code when goods are imported for personal use, in place of quoting a resident registration number. Other identifiers are accepted in some cases, but the code is the one that clears reliably. It is free, the recipient applies for it themselves, and it takes very little time — but a shipment that arrives without one waits at clearance until it is produced. Ask the person you are sending to for their code at the same time as you ask for their address. It is the most common reason a parcel to Korea sits still.",
       },
       arrival: {
         title: "Delivering to a factory town, not a city centre",
@@ -203,7 +203,7 @@ export const ASIA_CORRIDORS: CorridorContent[] = [
         {
           question: "What is the personal customs clearance code and do I really need it?",
           answer:
-            "Yes, for a parcel imported for personal use. Korea asks individual recipients for this code instead of their resident registration number. The recipient applies for it themselves at no cost. Without it the shipment waits at clearance, so collect it before you book rather than chasing it afterwards.",
+            "In practice, yes, for a parcel imported for personal use. Korea identifies individual recipients by this code rather than a resident registration number, and while other identifiers are sometimes accepted, the code is what clears without argument. The recipient applies for it themselves at no cost. Without it the shipment waits at clearance, so collect it before you book rather than chasing it afterwards.",
         },
         {
           question: "Can I send Nepali food to a worker in Korea?",
