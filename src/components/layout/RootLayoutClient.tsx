@@ -47,7 +47,13 @@ export default function RootLayoutClient({
               </main>
               {!workspace && <Footer />}
             </div>
-            <ConsentBanner />
+            {/* Not in the workspace. The admin console and the customer
+                dashboard set no optional cookies and are excluded from
+                measurement, so there is nothing there to ask about — and
+                the banner was covering half the screen of people who had
+                signed in to do a job. The preferences dialog stays mounted
+                so the choice is still reachable if something opens it. */}
+            {!workspace && <ConsentBanner />}
             <ConsentPreferences />
             {/* Suspense because useSearchParams opts a route out of static
                 rendering otherwise; the component renders nothing, so the

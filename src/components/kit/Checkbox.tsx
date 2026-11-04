@@ -60,7 +60,16 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
           {...aria}
           aria-describedby={allDescribedBy}
           className={cn(
+            // The checked and indeterminate colours are set explicitly.
+            // The forms plugin paints a white tick on `currentColor`, but
+            // `bg-white` sits in the utilities layer and the plugin's
+            // `:checked` rule sits in base — layers beat specificity, so
+            // the box stayed white and the white tick was invisible. The
+            // state was correct in the DOM and unreadable on screen, which
+            // is the worst way for a checkbox to be wrong.
             'mt-3 h-5 w-5 shrink-0 cursor-pointer rounded border-slate-400 bg-white text-teal-700 accent-[color:var(--brand-teal)]',
+            'checked:border-[color:var(--brand-teal)] checked:bg-[color:var(--brand-teal)]',
+            'indeterminate:border-[color:var(--brand-teal)] indeterminate:bg-[color:var(--brand-teal)]',
             error && 'border-red-600',
             disabled && 'cursor-not-allowed opacity-60',
             className,

@@ -59,8 +59,30 @@ const ADMIN_NAV: NavSection[] = [
     ],
   },
   {
+    heading: "Marketing",
+    links: [
+      { label: "Advert campaigns", href: "/admin/ads" },
+      { label: "Ad placements", href: "/admin/ads/placements" },
+      { label: "Advert performance", href: "/admin/ads/report" },
+      { label: "Site notices", href: "/admin/notices" },
+      { label: "Email contacts", href: "/admin/marketing/contacts" },
+      { label: "Email campaigns", href: "/admin/marketing/campaigns" },
+    ],
+  },
+  {
+    // Separate from "Site" because these are answered to a regulator rather
+    // than used to run the business, and whoever handles a data request
+    // should not have to know it lives under a content heading.
+    heading: "Privacy",
+    links: [
+      { label: "Consent register", href: "/admin/consent" },
+      { label: "Data requests", href: "/admin/privacy" },
+    ],
+  },
+  {
     heading: "Site",
     links: [
+      { label: "Website analytics", href: "/admin/analytics" },
       { label: "Website content", href: "/admin/content" },
       { label: "Pricing rules", href: "/admin/pricing" },
       { label: "Settings", href: "/admin/settings" },

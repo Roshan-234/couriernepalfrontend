@@ -158,6 +158,43 @@ export const queryKeys = {
       ["ads", "notices", path, language, [...exclude].sort().join(",")] as const,
   },
 
+  /**
+   * The admin side of advertising. Kept apart from `ads` above, which is
+   * the visitor-facing feed: invalidating a campaign edit must not blow
+   * away a public slot's cache, and the two answer different questions.
+   */
+  adsAdmin: {
+    all: ["ads-admin"] as const,
+    campaigns: (filters: Record<string, unknown> = {}) =>
+      ["ads-admin", "campaigns", filters] as const,
+    campaign: (campaignId: string | number) =>
+      ["ads-admin", "campaigns", id(campaignId)] as const,
+    creatives: (campaignId: string | number) =>
+      ["ads-admin", "campaigns", id(campaignId), "creatives"] as const,
+    placements: ["ads-admin", "placements"] as const,
+    notices: (filters: Record<string, unknown> = {}) =>
+      ["ads-admin", "notices", filters] as const,
+    /** The range is in the key: it selects which campaigns appear. */
+    report: (range: Record<string, unknown> = {}) =>
+      ["ads-admin", "report", range] as const,
+  },
+
+  marketing: {
+    all: ["marketing"] as const,
+    contacts: (filters: Record<string, unknown> = {}) =>
+      ["marketing", "contacts", filters] as const,
+    contact: (contactId: string | number) =>
+      ["marketing", "contacts", id(contactId)] as const,
+    campaigns: (filters: Record<string, unknown> = {}) =>
+      ["marketing", "campaigns", filters] as const,
+    campaign: (campaignId: string | number) =>
+      ["marketing", "campaigns", id(campaignId)] as const,
+    campaignReport: (campaignId: string | number) =>
+      ["marketing", "campaigns", id(campaignId), "report"] as const,
+    campaignSends: (campaignId: string | number, filters: Record<string, unknown> = {}) =>
+      ["marketing", "campaigns", id(campaignId), "sends", filters] as const,
+  },
+
   consent: {
     all: ["consent"] as const,
     /** The decision in force, as the server sees it. Asked once per load. */
@@ -169,4 +206,40 @@ export const queryKeys = {
 
   sessions: (userId?: string | number) =>
     userId === undefined ? (["sessions"] as const) : (["sessions", id(userId)] as const),
+
+  /**
+   * Admin analytics reporting. Kept apart from the `consent` block above,
+   * which is the visitor's own state; nothing here is per-visitor.
+   */
+  analytics: {
+    all: ["analytics"] as const,
+    overview: (range: Record<string, unknown> = {}) =>
+      ["analytics", "overview", range] as const,
+    events: (filters: Record<string, unknown> = {}) =>
+      ["analytics", "events", filters] as const,
+    daily: (filters: Record<string, unknown> = {}) =>
+      ["analytics", "daily", filters] as const,
+    realtime: ["analytics", "realtime"] as const,
+  },
+
+  /** The consent register, as an administrator reads it. */
+  consentRegister: {
+    all: ["consent-register"] as const,
+    records: (filters: Record<string, unknown> = {}) =>
+      ["consent-register", "records", filters] as const,
+    summary: ["consent-register", "summary"] as const,
+  },
+
+  privacy: {
+    all: ["privacy"] as const,
+    queue: (filters: Record<string, unknown> = {}) =>
+      ["privacy", "queue", filters] as const,
+    /**
+     * Its own key rather than part of the queue's: the overdue count is
+     * shown whatever the filters are, and must not disappear because
+     * somebody narrowed the list.
+     */
+    overdue: ["privacy", "overdue"] as const,
+    retention: ["privacy", "retention"] as const,
+  },
 } as const;

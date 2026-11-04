@@ -11,7 +11,8 @@
  * leaning on the shared axios client so credentials and CSRF come along.
  */
 
-import { del, get, post } from "./client";
+import { del, get, getPage, post, type Query } from "./client";
+import type { Paginated } from "@/types/logistics";
 
 /** The four categories the policy endpoint publishes. */
 export type ConsentCategoryKey = "necessary" | "analytics" | "marketing" | "preferences";
@@ -98,3 +99,58 @@ export const withdrawConsent = () => del<ConsentStatus>("/consent/");
 
 /** The signed-in visitor's own consent history. */
 export const getMyConsentHistory = () => get<{ items: ConsentRecord[] }>("/consent/me");
+
+// ── The register (admin / super_admin) ──────────────────────────────────────
+
+/**
+ * The evidence side, read by whoever has to answer a regulator.
+ *
+ * Art. 7(1) puts the burden of *demonstrating* consent on the controller,
+ * so the register has to make one record readable on its own: what was
+ * agreed, under which version of the notice, when, and when it lapses. The
+ * admin listing adds the thin evidence fields the public endpoints never
+ * return — a salted `ip_hash` (the address itself is not stored), the
+ * user agent, the country and the pseudonymous `subject_key`.
+ */
+
+/** A register row: `ConsentRecord` plus `include_evidence=True`. */
+export interface ConsentRegisterRow extends ConsentRecord {
+  subject_key: string;
+  user_id: number | null;
+  country: string | null;
+  user_agent: string | null;
+  /** Salted SHA-256. There is no address behind it to recover. */
+  ip_hash: string | null;
+}
+
+export interface ConsentRecordFilters extends Query {
+  subject_key?: string;
+  user_id?: number | string;
+  action?: string;
+  policy_version?: string;
+  from?: string;
+  to?: string;
+  page?: number;
+  per_page?: number;
+}
+
+/**
+ * `GET /consent/summary`. Acceptance per category over the decisions still
+ * in force — current policy version, not expired, latest per subject.
+ */
+export interface ConsentSummary {
+  policy_version: string;
+  decisions_in_force: number;
+  withdrawn: number;
+  accepted: Record<string, { count: number; rate: number }>;
+  total_records: number;
+}
+
+/** `given`, `updated` or `withdrawn`. */
+export const CONSENT_ACTIONS = ["given", "updated", "withdrawn"] as const;
+
+export const consentRegister = {
+  records: (query: ConsentRecordFilters = {}): Promise<Paginated<ConsentRegisterRow>> =>
+    getPage<ConsentRegisterRow>("/consent/records", query),
+  summary: () => get<ConsentSummary>("/consent/summary"),
+};
