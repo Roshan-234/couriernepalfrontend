@@ -20,8 +20,17 @@ const TITLE = "Courier for online sellers and businesses | Moonlight Freight";
 const DESCRIPTION =
   "Cash on delivery, bulk booking, scheduled pickups, cash remittance and an API for your storefront. Delivery built for Nepali e-commerce sellers and merchants.";
 
+/**
+ * `noindex` until the bracketed gaps on this page are filled.
+ *
+ * The page still carries [TO CONFIRM] markers where a commercial fact
+ * belongs, and those render to the public. Half-written content indexed
+ * under a twenty-year-old company's name costs more than a page Google
+ * has not found yet, and the flag comes off in one line once the figures
+ * are in. See CONTENT-TO-CONFIRM.md.
+ */
 export const generateMetadata = () =>
-  buildMetadata({ title: TITLE, description: DESCRIPTION, path: PATH });
+  buildMetadata({ title: TITLE, description: DESCRIPTION, path: PATH, noindex: true });
 
 const PILLARS = [
   {

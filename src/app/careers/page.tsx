@@ -18,8 +18,17 @@ const TITLE = "Careers | Jobs in courier and logistics, Kathmandu";
 const DESCRIPTION =
   "There are no vacancies advertised at Moonlight Freight right now. Speculative applications are welcome — here is what we look for and how to apply.";
 
+/**
+ * `noindex` until the bracketed gaps on this page are filled.
+ *
+ * The page still carries [TO CONFIRM] markers where a commercial fact
+ * belongs, and those render to the public. Half-written content indexed
+ * under a twenty-year-old company's name costs more than a page Google
+ * has not found yet, and the flag comes off in one line once the figures
+ * are in. See CONTENT-TO-CONFIRM.md.
+ */
 export const generateMetadata = () =>
-  buildMetadata({ title: TITLE, description: DESCRIPTION, path: PATH });
+  buildMetadata({ title: TITLE, description: DESCRIPTION, path: PATH, noindex: true });
 
 export default function Page() {
   return (

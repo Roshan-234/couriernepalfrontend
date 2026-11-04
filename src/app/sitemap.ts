@@ -39,11 +39,26 @@ const STATIC_ROUTES: Array<[path: string, priority: number, freq: Entry['changeF
 /**
  * Pages deliberately kept out.
  *
+ * Every one of these carries `noindex`, and listing a noindexed page in a
+ * sitemap is a contradictory signal. They stay in the route table above so
+ * their priorities survive; remove a path from this set once its page is
+ * finished and the flag comes off.
+ *
  * `/terms` and `/refund-policy` are drafts pending the company's own legal
- * review and carry `noindex` until it happens; listing a noindexed page in a
- * sitemap is a contradictory signal. Add them once they are approved.
+ * review. The rest still show [TO CONFIRM] markers where a commercial fact
+ * belongs — see CONTENT-TO-CONFIRM.md — and half-written content indexed
+ * under a twenty-year-old company's name costs more than a page Google has
+ * not found yet.
  */
-const EXCLUDED = new Set(['/terms', '/refund-policy']);
+const EXCLUDED = new Set([
+  '/terms',
+  '/refund-policy',
+  '/business',
+  '/prohibited-items',
+  '/customs-guide',
+  '/packing-guide',
+  '/careers',
+]);
 
 async function blogArticles(): Promise<Entry[]> {
   try {

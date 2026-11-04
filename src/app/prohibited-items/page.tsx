@@ -19,8 +19,17 @@ const TITLE = "Prohibited and restricted items | Moonlight Freight";
 const DESCRIPTION =
   "What a courier cannot carry out of Nepal, and what needs clearance first: dangerous goods, currency, antiquities, wildlife products, lithium batteries and perishables.";
 
+/**
+ * `noindex` until the bracketed gaps on this page are filled.
+ *
+ * The page still carries [TO CONFIRM] markers where a commercial fact
+ * belongs, and those render to the public. Half-written content indexed
+ * under a twenty-year-old company's name costs more than a page Google
+ * has not found yet, and the flag comes off in one line once the figures
+ * are in. See CONTENT-TO-CONFIRM.md.
+ */
 export const generateMetadata = () =>
-  buildMetadata({ title: TITLE, description: DESCRIPTION, path: PATH });
+  buildMetadata({ title: TITLE, description: DESCRIPTION, path: PATH, noindex: true });
 
 /** Categories that are refused at the counter, with no exception process. */
 const REFUSED = [
