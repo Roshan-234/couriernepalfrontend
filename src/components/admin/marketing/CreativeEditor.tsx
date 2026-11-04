@@ -8,7 +8,9 @@
  * * **An image needs alt text.** The API refuses to activate a creative
  *   that carries an image and no `image_alt`, because the image is the
  *   offer rather than decoration. The field is therefore required the
- *   moment an image path is typed, and says why.
+ *   moment an image path is typed, and says why. It is *not* required to
+ *   upload: `CreativeImageField` deliberately does not block on it, so
+ *   sorting out artwork and writing copy can be separate sittings.
  * * **`target_path` and every entry in `page_paths` must be
  *   site-relative.** They end up inside an `href`, so `javascript:`,
  *   `data:`, absolute and protocol-relative values are all rejected.
@@ -30,6 +32,7 @@ import type {
 } from "@/lib/resources/advertising";
 import { AD_FORMATS } from "@/lib/resources/advertising";
 import type { AdFormat } from "@/lib/resources/ads";
+import { CreativeImageField } from "./CreativeImageField";
 import {
   FormSection,
   PATH_HINT,
@@ -99,6 +102,12 @@ export interface CreativeEditorProps {
   saving: boolean;
   onClose: () => void;
   onSubmit: (body: CreativeWrite) => void;
+  /**
+   * An image upload or removal is its own write, committed by the API
+   * before this form is saved. This hands the returned creative back so
+   * the list behind the drawer can be updated from it.
+   */
+  onImageChanged: (creative: AdCreativeRow) => void;
 }
 
 export function CreativeEditor({
@@ -108,13 +117,22 @@ export function CreativeEditor({
   saving,
   onClose,
   onSubmit,
+  onImageChanged,
 }: CreativeEditorProps) {
   const [form, setForm] = useState<Form>(blank);
   const [showErrors, setShowErrors] = useState(false);
+  /**
+   * What the API currently holds in `image_path`, tracked separately from
+   * the form because an upload changes it mid-edit. The `creative` prop
+   * deliberately keeps its identity across an upload — replacing it would
+   * re-run the effect below and throw away everything typed so far.
+   */
+  const [storedImage, setStoredImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
     setForm(creative ? formFrom(creative) : blank);
+    setStoredImage(creative?.image_path ?? null);
     setShowErrors(false);
   }, [open, creative]);
 
@@ -333,16 +351,20 @@ export function CreativeEditor({
 
         <FormSection
           title="Image"
-          description="There is no upload endpoint in this codebase: the path has to point at something the site already serves, or at the CDN."
+          description="Optional — a text-only advert is a legitimate one. An uploaded file is stored on this site, re-encoded, and served from a permanent URL."
         >
-          <Field label="Image path or URL" showOptional>
-            <Input
-              value={form.image_path}
-              maxLength={500}
-              placeholder="/images/offers/dashain-hero.jpg"
-              onChange={(event) => set("image_path", event.target.value)}
-            />
-          </Field>
+          <CreativeImageField
+            creativeId={creative?.id ?? null}
+            storedPath={storedImage}
+            value={form.image_path}
+            alt={form.image_alt}
+            disabled={saving}
+            onChange={(value) => set("image_path", value)}
+            onStored={(row) => {
+              setStoredImage(row.image_path);
+              onImageChanged(row);
+            }}
+          />
           <Field
             label="Alt text"
             required={Boolean(form.image_path.trim())}
@@ -350,7 +372,7 @@ export function CreativeEditor({
             error={show("image_alt")}
             hint={
               form.image_path.trim()
-                ? "Required: this creative cannot be activated without it."
+                ? "Required: this creative cannot be activated without it. Uploading the file did not need it; going live does."
                 : "Required as soon as there is an image."
             }
           >

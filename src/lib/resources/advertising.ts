@@ -25,7 +25,7 @@
  *    Nepali boxes empty and blank the stored copy on the next save.
  */
 
-import { del, get, getPage, post, put, type Query } from "./client";
+import { del, errorMessage, get, getPage, post, postForm, put, statusOf, type Query } from "./client";
 import type { AdFormat, NoticeStyle, NoticeTone } from "./ads";
 import type { Paginated } from "@/types/logistics";
 
@@ -253,6 +253,79 @@ export interface CreativeWrite {
   is_active?: boolean;
 }
 
+/* ── Creative images ────────────────────────────────────────────────────── */
+
+/**
+ * What `POST /ads/creatives/<id>/image` answers with.
+ *
+ * `creative` is the full admin shape, so the caller updates its cache from
+ * this rather than refetching. `image` describes what was *stored*, which
+ * is not quite what was sent: the server decodes the upload and writes it
+ * out again from the pixels.
+ */
+export interface CreativeImageUpload {
+  creative: AdCreativeRow;
+  image: {
+    /** Site-relative and server-generated. The uploaded name is discarded. */
+    url: string;
+    content_type: string;
+    width: number;
+    height: number;
+  };
+  /**
+   * The server's own sentence about what it just did — it is the thing
+   * that says when alt text is still outstanding, so it is shown rather
+   * than replaced with a message of ours.
+   */
+  note: string;
+}
+
+/**
+ * The rules `app/advertising/uploads.py` enforces, repeated so the form can
+ * state them before a file is chosen instead of letting someone discover
+ * them by failing. The server remains the authority; these numbers only
+ * decide what the field says and which files it declines to send.
+ *
+ * SVG is absent on purpose and not an oversight: the server refuses it
+ * outright because it is a document that can carry script, not a bitmap.
+ */
+export const CREATIVE_IMAGE_RULES = {
+  /** The `accept` attribute. Advisory in the file picker, enforced server-side. */
+  accept: "image/png,image/jpeg,image/webp",
+  formats: "PNG, JPEG or WebP",
+  maxBytes: 2 * 1024 * 1024,
+  maxEdge: 6000,
+  minEdge: 80,
+} as const;
+
+/** The prefix `uploads.public_url` generates for a file this system stores. */
+const MANAGED_IMAGE_PREFIX = "/api/ads/images/";
+
+/**
+ * True when an `image_path` points at a file the upload endpoint stored,
+ * rather than at a hand-typed path or an off-site CDN URL.
+ */
+export const isManagedImage = (value: string | null | undefined): boolean =>
+  Boolean(value && value.startsWith(MANAGED_IMAGE_PREFIX));
+
+/**
+ * Why an image upload failed, in words an administrator can act on.
+ *
+ * `MAX_CONTENT_LENGTH` is enforced by the server before any handler runs,
+ * so an over-sized body comes back as a bare 413 with no JSON message in
+ * it. Left to `errorMessage` that is an unexplained "something went
+ * wrong"; the one case worth spelling out is the one the generic path
+ * cannot describe.
+ */
+export function imageUploadProblem(error: unknown): string {
+  if (statusOf(error) === 413) {
+    return `That file is over the ${Math.round(
+      CREATIVE_IMAGE_RULES.maxBytes / (1024 * 1024),
+    )} MB limit, so the server rejected it before reading it. Export it smaller, or save it as a JPEG or WebP rather than a PNG.`;
+  }
+  return errorMessage(error, "The upload failed. Please try again.");
+}
+
 export const adCreatives = {
   listFor: async (campaignId: number) =>
     (await get<{ items: AdCreativeRow[] }>(`/ads/campaigns/${campaignId}/creatives`)).items,
@@ -264,6 +337,21 @@ export const adCreatives = {
   /** 400 when the creative carries an image and no alt text. */
   activate: (id: number) => post<AdCreativeRow>(`/ads/creatives/${id}/activate`),
   deactivate: (id: number) => post<AdCreativeRow>(`/ads/creatives/${id}/deactivate`),
+
+  /**
+   * Attach an image. The field name is `file`, which the server requires.
+   *
+   * This writes `image_path` immediately — it is not staged until the
+   * editor is saved — and replacing an image deletes the file it replaced.
+   * Alt text is *not* required here: it is required to activate.
+   */
+  uploadImage: (id: number, file: File) => {
+    const body = new FormData();
+    body.append("file", file);
+    return postForm<CreativeImageUpload>(`/ads/creatives/${id}/image`, body);
+  },
+  /** Clears `image_path` and deletes the stored file, leaving a text-only creative. */
+  removeImage: (id: number) => del<AdCreativeRow>(`/ads/creatives/${id}/image`),
 };
 
 /* ── Notices ────────────────────────────────────────────────────────────── */

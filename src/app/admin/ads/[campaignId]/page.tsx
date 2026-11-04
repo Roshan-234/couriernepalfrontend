@@ -78,6 +78,21 @@ export default function Page() {
     await cache.invalidateQueries({ queryKey: queryKeys.adsAdmin.all });
   }
 
+  /**
+   * Put one creative the API just returned back into the list.
+   *
+   * An image upload answers with the full admin shape, so there is nothing
+   * a refetch would tell us that this does not — and refetching while the
+   * editor is open would replace the row the drawer is bound to and reset
+   * the half-typed form inside it.
+   */
+  function patchCreative(row: AdCreativeRow) {
+    cache.setQueryData<AdCreativeRow[]>(
+      queryKeys.adsAdmin.creatives(campaignId),
+      (current) => current?.map((item) => (item.id === row.id ? row : item)),
+    );
+  }
+
   const save = useMutation({
     mutationFn: (body: CreativeWrite) =>
       editing ? adCreatives.update(editing.id, body) : adCreatives.create(campaignId, body),
@@ -189,17 +204,34 @@ export default function Page() {
       header: "Creative",
       primary: true,
       cell: (row) => (
-        <div>
-          <p className="font-semibold text-[color:var(--brand-navy)]">{row.headline}</p>
-          <p className="text-xs text-slate-600">
-            {row.placement ?? placementById.get(row.placement_id) ?? "—"} · {row.format} ·
-            priority {row.priority}
-          </p>
-          {row.image_path && !row.image_alt && (
-            <p className="mt-1 text-xs font-semibold text-red-700">
-              Image with no alt text — cannot be activated.
-            </p>
+        <div className="flex items-start gap-3">
+          {row.image_path && (
+            /* Decorative here: the headline beside it names the creative,
+               and the alt-text state is reported in words below rather
+               than left to whether this thumbnail happens to have any.
+               `<img>` rather than `next/image` because `image_path` may be
+               any origin — see `CreativeImageField`. */
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={row.image_path}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="h-10 w-16 shrink-0 rounded-[0.4rem] border border-slate-300 bg-white object-contain"
+            />
           )}
+          <div className="min-w-0">
+            <p className="font-semibold text-[color:var(--brand-navy)]">{row.headline}</p>
+            <p className="text-xs text-slate-600">
+              {row.placement ?? placementById.get(row.placement_id) ?? "—"} · {row.format} ·
+              priority {row.priority}
+            </p>
+            {row.image_path && !row.image_alt && (
+              <p className="mt-1 text-xs font-semibold text-red-700">
+                Image with no alt text — cannot be activated.
+              </p>
+            )}
+          </div>
         </div>
       ),
     },
@@ -437,6 +469,7 @@ export default function Page() {
           setCreating(false);
         }}
         onSubmit={(body) => save.mutate(body)}
+        onImageChanged={patchCreative}
       />
 
       <ConfirmDialog

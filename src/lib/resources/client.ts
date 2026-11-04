@@ -10,10 +10,23 @@
  * exists — a directory of the same name would make `@/lib/api` ambiguous.
  */
 
+import axios from "axios";
 import api from "@/lib/api";
 import type { Paginated } from "@/types/logistics";
 
 export { errorMessage } from "@/lib/api";
+
+/**
+ * The HTTP status an error carries, or 0 when it never reached the server.
+ *
+ * `errorMessage` reads the body, which is enough for the endpoints that
+ * answer JSON. A few do not — an over-sized upload is rejected by the
+ * server before any handler runs — so a caller that has to tell one
+ * failure from another needs the status itself.
+ */
+export function statusOf(error: unknown): number {
+  return axios.isAxiosError(error) ? (error.response?.status ?? 0) : 0;
+}
 
 /** Query values that survive a trip through URLSearchParams. */
 export type QueryValue = string | number | boolean | null | undefined;
@@ -36,6 +49,20 @@ export async function get<T>(path: string, query: Query = {}): Promise<T> {
 
 export async function post<T>(path: string, body?: unknown): Promise<T> {
   const { data } = await api.post<T>(path, body ?? {});
+  return data;
+}
+
+/**
+ * POST a `multipart/form-data` body.
+ *
+ * `Content-Type` is deliberately not set: a multipart body is only
+ * readable with the boundary the browser appends when it serialises the
+ * `FormData` itself, and writing the header by hand loses it. The longer
+ * timeout is for the upload plus the server-side re-encode, which the
+ * 15s default would cut short on a slow connection.
+ */
+export async function postForm<T>(path: string, form: FormData): Promise<T> {
+  const { data } = await api.post<T>(path, form, { timeout: 60_000 });
   return data;
 }
 
