@@ -119,7 +119,6 @@ SITE_URL=https://couriernepal.com
 BACKEND_URL=https://api.couriernepal.com
 BACKEND_PROXY_SECRET=THE_SAME_THIRD_SECRET_AS_BACKEND
 ENABLE_HSTS=true
-GA_MEASUREMENT_ID=
 GOOGLE_SITE_VERIFICATION=
 ```
 
@@ -142,13 +141,13 @@ The backend's `Deploy backend to cPanel` workflow is now manual (`workflow_dispa
 
 Required deployment secrets are `SSH_HOST`, `SSH_USER`, `SSH_PORT`, `SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS`, `BACKEND_PATH`, and `VENV_PATH`. `SSH_KNOWN_HOSTS` must contain the server key verified independently with your hosting provider. `VENV_PATH` is the absolute path ending in `/bin/activate`, not a shell command (it replaces the previous `VENV_ACTIVATE` setting). Paths must be below `/home/USER/`. The workflow preserves environment files, runtime storage and virtual environments; it does not delete unknown remote files. Review any obsolete source files during a release. Deploy/restart the frontend separately using the steps above, then perform the release checks before leaving maintenance.
 
-## 5. SEO and optional analytics
+## 5. SEO and visit measurement
 
 The site includes DB-managed titles/descriptions, canonical URLs, Open Graph/Twitter metadata, organization JSON-LD, server-rendered public page/article text, `robots.txt`, and a DB-generated sitemap. Unpublished pages and drafts are excluded; account routes and shipment tracking are marked noindex. Sitemap article export currently supports up to 10,000 published articles; partition into sitemap files before exceeding that limit. No search ranking is guaranteed.
 
 Verify `https://couriernepal.com` in Google Search Console. Put its HTML verification value in `GOOGLE_SITE_VERIFICATION` and submit `https://couriernepal.com/sitemap.xml`.
 
-Set `GA_MEASUREMENT_ID` to your real `G-...` value to enable the consent UI. It stays disabled when unset. The Google tag loads only after acceptance. Manual public-page views exclude query strings, tracking pages, authentication/account routes and form data. In GA4, **disable automatic/enhanced pageview/history measurement, form interactions and other enhanced measurement** for this stream to avoid duplicate events or unintended data collection. Google tag settings must match the code. Validate in GA4 DebugView/Realtime after deployment; no analytics account has been created or configured for you. Privacy text is editable and should reflect your actual operations and retention practices before launch.
+Visit measurement is first-party: there is no Google tag, no third-party script and no measurement ID to set. Counting happens on our own servers, and only for visitors who have granted the `analytics` category through the consent banner, which reads its categories and policy version from `/api/consent/policy`. The decision itself is a record on the server keyed by an HttpOnly cookie, not a flag in the browser, so it can be audited and withdrawn. Withdrawal is reachable from the **Cookie settings** link in the footer on every page. Review `/privacy`, `/cookies` and `/data-requests` before launch: they are database-managed and still carry `[TO CONFIRM]` markers where the company has to supply a fact.
 
 ## 6. Release verification and operations
 
@@ -177,6 +176,5 @@ These choices fit the actual queries; there is no reason to add unrelated algori
 - [cPanel Node.js deployment](https://docs.cpanel.net/knowledge-base/web-services/how-to-install-a-node.js-application/)
 - [cPanel Python WSGI deployment](https://docs.cpanel.net/knowledge-base/web-services/how-to-install-a-python-wsgi-application/)
 - [Next.js CSP and dynamic rendering](https://nextjs.org/docs/app/guides/content-security-policy)
-- [GA4 manual pageviews](https://developers.google.com/analytics/devguides/collection/ga4/views)
 
 No system is hacker-proof. These controls reduce risk; hosting configuration, monitoring, dependency updates, backups and a deployment-specific security review remain necessary.

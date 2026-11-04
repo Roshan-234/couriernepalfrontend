@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import AdSlot from '@/components/ads/AdSlot';
 import PricingCalculator from '@/components/common/PricingCalculator';
 import PageIntro from '@/components/common/PageIntro';
 import JsonLd from '@/components/seo/JsonLd';
@@ -126,6 +127,11 @@ export default async function Page() {
       </nav>
 
       <PageIntro page={page} />
+
+      {/* A discount or a seasonal rate belongs directly above the calculator,
+          where somebody is already working out what a shipment will cost.
+          Renders nothing when no campaign is live. */}
+      <AdSlot placement="pricing_banner" path="/pricing" variant="banner" className="mb-10" />
 
       <div className="panel">
         <PricingCalculator />

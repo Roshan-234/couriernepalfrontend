@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Brand from "@/components/layout/Brand";
+import CookieSettingsLink from "@/components/consent/CookieSettingsLink";
 import { BUSINESS, OPENING_HOURS_TEXT } from "@/lib/seo/business";
 
 /**
@@ -45,6 +46,8 @@ const COLUMNS: { heading: string; links: [label: string, href: string][] }[] = [
       ["Careers", "/careers"],
       ["Contact", "/contact"],
       ["Privacy", "/privacy"],
+      ["Cookie notice", "/cookies"],
+      ["Data requests", "/data-requests"],
       ["Terms", "/terms"],
     ],
   },
@@ -100,9 +103,15 @@ export default function Footer() {
         <span>
           © {new Date().getFullYear()} {BUSINESS.legalName}. All rights reserved.
         </span>
-        <Link href="/contact" className="text-[#ffda16] hover:underline">
-          Contact our team ↗
-        </Link>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          {/* Consent must be as easy to take back as it was to give, which
+              means a way back to the dialog from every page, not only from
+              the banner the visitor already dismissed. */}
+          <CookieSettingsLink className="min-h-11 text-slate-200 underline-offset-4 hover:text-[#ffda16] hover:underline" />
+          <Link href="/contact" className="text-[#ffda16] hover:underline">
+            Contact our team ↗
+          </Link>
+        </div>
       </div>
     </footer>
   );

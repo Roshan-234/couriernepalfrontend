@@ -4,7 +4,7 @@ Next.js 15 and React frontend for **couriernepal.com**, using the Moonlight Frei
 
 ## Setup and deployment
 
-Start with [DEPLOYMENT.md](DEPLOYMENT.md). It includes Windows local setup, administrator creation, cPanel Node/Python configuration, MySQL migrations, Redis rate limits, SMTP, SEO, analytics and rollback.
+Start with [DEPLOYMENT.md](DEPLOYMENT.md). It includes Windows local setup, administrator creation, cPanel Node/Python configuration, MySQL migrations, Redis rate limits, SMTP, SEO, visit measurement and rollback.
 
 ```powershell
 npm ci
@@ -21,7 +21,7 @@ Start the backend on port 5000 first. Open http://localhost:3000. Browser reques
 - Shipment booking, paginated history, tracking, profile and revocable sessions connected to Flask.
 - Admin pricing and account controls; server-calculated shipping estimates.
 - Server-rendered articles and sanitized rich text, canonical links, sitemap, robots and organization metadata.
-- Optional consent-based Google Analytics. Set a real `GA_MEASUREMENT_ID`; follow the stream configuration instructions in the deployment guide.
+- First-party visit measurement behind a GDPR-shaped consent banner; the decision is stored and audited server-side, never in the browser.
 - HttpOnly cookie authentication, CSRF protection, server-only backend key, CSP nonces and security headers.
 
 ## Verification
@@ -39,4 +39,4 @@ The lockfile includes compatible security updates. Targeted overrides keep Next.
 
 ## Launch requirements
 
-Review starter content and privacy wording, configure real rates, confirm cPanel runtime support, and verify HTTPS, SMTP and live carrier integrations. Production hosting and analytics credentials are not included. Account form labels and operational interface structure remain code-managed; business records and public editorial content are database-managed.
+Review starter content and privacy wording, configure real rates, confirm cPanel runtime support, and verify HTTPS, SMTP and live carrier integrations. Production hosting credentials are not included. Account form labels and operational interface structure remain code-managed; business records and public editorial content are database-managed.

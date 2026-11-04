@@ -44,3 +44,37 @@ export type {
   NotificationLogRow,
   SmsProvider,
 } from "./integrations";
+
+export { serveAds, getNotices, dismissNotice, sendAdEvent } from "./ads";
+export type {
+  AdCreative,
+  AdEventKind,
+  AdFormat,
+  AdServeResponse,
+  NoticeDismissal,
+  NoticeFeed,
+  NoticeQuery,
+  NoticeStyle,
+  NoticeTone,
+  ServeQuery,
+  SiteNotice,
+} from "./ads";
+
+export {
+  getConsentPolicy,
+  getConsentStatus,
+  saveConsent,
+  withdrawConsent,
+  getMyConsentHistory,
+  NO_CONSENT,
+} from "./consent";
+export type {
+  ConsentAllowances,
+  ConsentCategory,
+  ConsentCategoryKey,
+  ConsentPolicy,
+  ConsentRecord,
+  ConsentSource,
+  ConsentState,
+  ConsentStatus,
+} from "./consent";

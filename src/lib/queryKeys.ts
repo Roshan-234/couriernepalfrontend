@@ -140,6 +140,33 @@ export const queryKeys = {
     pages: ["site-content"] as const,
   },
 
+  ads: {
+    all: ["ads"] as const,
+    /**
+     * One entry per slot per page per language. Path is part of the key
+     * because `/serve` decides on it, so the same placement legitimately
+     * answers differently on `/` and on `/pricing`.
+     */
+    slot: (placement: string, path: string, language: string) =>
+      ["ads", "slot", placement, path, language] as const,
+    /**
+     * The dismissed codes are in the key on purpose: dismissing a notice
+     * changes what the feed should return, and a key that ignored the
+     * exclusions would serve the dismissed notice back from cache.
+     */
+    notices: (path: string, language: string, exclude: readonly string[]) =>
+      ["ads", "notices", path, language, [...exclude].sort().join(",")] as const,
+  },
+
+  consent: {
+    all: ["consent"] as const,
+    /** The decision in force, as the server sees it. Asked once per load. */
+    status: ["consent", "status"] as const,
+    /** Categories and wording for the version being submitted against. */
+    policy: ["consent", "policy"] as const,
+    me: ["consent", "me"] as const,
+  },
+
   sessions: (userId?: string | number) =>
     userId === undefined ? (["sessions"] as const) : (["sessions", id(userId)] as const),
 } as const;

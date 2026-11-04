@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
-    "test": "node --test tests/middleware.test.cjs tests/seo-serialize.test.cjs",
+    "test": "node --test tests/middleware.test.cjs tests/seo-serialize.test.cjs tests/analytics-beacon.test.cjs",
     "test:e2e": "node --test tests/e2e-smoke.test.cjs",
     "test:all": "npm run test && npm run test:e2e"
   },

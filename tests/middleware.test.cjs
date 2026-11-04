@@ -82,3 +82,15 @@ test('the API proxy falls back to x-real-ip when no chain is present', () => {
   const response = middleware({ BACKEND_PROXY_SECRET: 'k' })(request);
   assert.equal(response.headers.get('x-middleware-request-x-real-client-ip'), '198.51.100.7');
 });
+
+test('the policy no longer allows connections to the analytics vendors', () => {
+  // Google Analytics was removed from the product; visit counting is
+  // first-party and goes through this app's own /api proxy. An allowlist
+  // entry that outlives the script it was written for is a door left open
+  // for whatever loads next.
+  const policy = middleware()(new NextRequest('https://couriernepal.com/')).headers.get(
+    'Content-Security-Policy',
+  );
+  assert.doesNotMatch(policy, /google/i);
+  assert.match(policy, /connect-src 'self'(;|$)/);
+});

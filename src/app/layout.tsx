@@ -1,15 +1,13 @@
 import './globals.css';
-import { headers } from 'next/headers';
 import type { Metadata } from 'next';
-import Analytics from '@/components/common/Analytics';
 import JsonLd from '@/components/seo/JsonLd';
 import { siteUrl, DEFAULT_OG_IMAGE } from '@/lib/content';
 import { localBusiness, website } from '@/lib/seo/jsonld';
 import { BUSINESS } from '@/lib/seo/business';
 
-// Rendering is dynamic regardless of this flag, because the layout reads the
-// per-request CSP nonce from headers(). The lever that actually matters for
-// time-to-first-byte is caching the backend content fetch, which getPages
+// Rendering is dynamic regardless of this flag, because `JsonLd` below reads
+// the per-request CSP nonce from headers(). The lever that actually matters
+// for time-to-first-byte is caching the backend content fetch, which getPages
 // now does — see CONTENT_REVALIDATE_SECONDS.
 import '@fontsource/inter';
 import '@fontsource/inter/600.css';
@@ -48,14 +46,12 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const nonce = (await headers()).get('x-nonce') || '';
   return (
     <html lang="en" className="h-full scroll-smooth antialiased" suppressHydrationWarning>
       <body className="h-full">
         {/* The business and the site, declared once and referenced by @id
             from the Service, Article and Breadcrumb markup on inner pages. */}
         <JsonLd data={[localBusiness(siteUrl), website(siteUrl)]} />
-        <Suspense fallback={null}><Analytics id={process.env.GA_MEASUREMENT_ID} nonce={nonce} siteUrl={siteUrl} /></Suspense>
         <Suspense fallback={<LoadingSpinner />}>
           <RootLayoutClient>{children}</RootLayoutClient>
         </Suspense>

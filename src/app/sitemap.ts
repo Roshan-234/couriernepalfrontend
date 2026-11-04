@@ -32,6 +32,8 @@ const STATIC_ROUTES: Array<[path: string, priority: number, freq: Entry['changeF
   ['/blog', 0.6, 'daily'],
   ['/careers', 0.4, 'monthly'],
   ['/privacy', 0.3, 'yearly'],
+  ['/cookies', 0.3, 'yearly'],
+  ['/data-requests', 0.3, 'yearly'],
 ];
 
 /**

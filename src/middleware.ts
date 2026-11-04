@@ -52,7 +52,12 @@ export function middleware(request: NextRequest) {
   const development = process.env.NODE_ENV !== 'production';
   const csp = ["default-src 'self'", `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${development ? " 'unsafe-eval'" : ''}`,
     "style-src 'self' 'unsafe-inline'", "img-src 'self' data: https:", "font-src 'self' data:",
-    `connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com${development ? ' ws: wss:' : ''}`,
+    // Analytics is first-party and reached through this app's own /api
+    // proxy, so nothing outside this origin needs to be connectable. The
+    // Google Analytics hosts that used to be listed here came off with the
+    // tag itself: a policy that still permits a script nobody loads is an
+    // opening kept warm for someone else.
+    `connect-src 'self'${development ? ' ws: wss:' : ''}`,
     "object-src 'none'", "base-uri 'self'", "form-action 'self'", "frame-ancestors 'none'"].join('; ');
   const headers = new Headers(request.headers);
   headers.set('x-nonce', nonce); headers.set('Content-Security-Policy', csp);

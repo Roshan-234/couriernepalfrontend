@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { FaArrowRight, FaPlane, FaShip, FaFileAlt, FaSuitcaseRolling, FaBoxOpen, FaHouseUser, FaTruck } from 'react-icons/fa';
+import AdSlot from '@/components/ads/AdSlot';
 import { getPage, pageMetadata } from '@/lib/content';
 import { CORRIDORS } from '@/lib/seo/business';
 
@@ -63,6 +64,13 @@ export default async function Home() {
 
   return (
     <div>
+      {/* ── Seasonal takeover, when one is running ───────────────────────
+          Directly under the header and above the hero, which is where the
+          `home_hero` placement is defined to sit and the only slot above the
+          fold. It renders nothing at all when no campaign is live, so the
+          page below is untouched in the ordinary case. */}
+      <AdSlot placement="home_hero" path="/" variant="hero" />
+
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="surface-deep overflow-hidden">
         <div className="container grid items-center gap-12 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-24">
@@ -139,6 +147,10 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* A single line under the hero: a cut-off date, a seasonal rate, a
+          service change. Nothing when there is nothing to say. */}
+      <AdSlot placement="home_strip" path="/" variant="strip" />
+
       {/* ── Where we ship ────────────────────────────────────────────── */}
       <section className="section container">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-5">
@@ -198,6 +210,15 @@ export default async function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Offers sit after the services grid: by here a visitor knows what we
+          do, which is the point at which a seasonal rate means something. */}
+      <AdSlot
+        placement="home_offers"
+        path="/"
+        variant="cards"
+        heading="Seasonal offers, straight from us."
+      />
 
       {/* ── How it works, from the managed content ───────────────────── */}
       {page.sections.length > 0 && (
