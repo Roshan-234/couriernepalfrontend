@@ -120,6 +120,28 @@ export const queryKeys = {
       ["claims", "detail", id(claimId)] as const,
   },
 
+  /**
+   * The two export documents. Kept apart from `shipments` even though both
+   * can hang off one: finalising a packing list must not blow away the
+   * shipment caches, and the two answer different questions.
+   */
+  packingLists: {
+    all: ["packing-lists"] as const,
+    list: (filters: Record<string, unknown> = {}) =>
+      ["packing-lists", "list", filters] as const,
+    detail: (packingListId: string | number) =>
+      ["packing-lists", "detail", id(packingListId)] as const,
+  },
+
+  /** `/api/invoices` on the wire; a freight bill on paper. */
+  freightBills: {
+    all: ["freight-bills"] as const,
+    list: (filters: Record<string, unknown> = {}) =>
+      ["freight-bills", "list", filters] as const,
+    detail: (billId: string | number) =>
+      ["freight-bills", "detail", id(billId)] as const,
+  },
+
   geo: {
     provinces: ["geo", "provinces"] as const,
     districts: (filters: Record<string, unknown> = {}) =>

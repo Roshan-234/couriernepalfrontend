@@ -51,6 +51,17 @@ const ADMIN_NAV: NavSection[] = [
     ],
   },
   {
+    // The paperwork that travels with a shipment. Separate from Finance
+    // because a packing list is the shipper's customs declaration, not a
+    // charge, and the people who produce them are not the people chasing
+    // remittances.
+    heading: "Documents",
+    links: [
+      { label: "Packing lists", href: "/admin/packing-lists" },
+      { label: "Freight bills", href: "/admin/freight-bills" },
+    ],
+  },
+  {
     heading: "Integrations",
     links: [
       { label: "Carriers", href: "/admin/carriers" },

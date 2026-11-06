@@ -36,6 +36,30 @@ export type {
   QuoteResult,
 } from "./finance";
 
+export {
+  BILL_ADMIN_STATUSES,
+  FREIGHT_BILL_STATUSES,
+  PACKING_LIST_STATUSES,
+  chargeAmount,
+  chargeLine,
+  chargeSubtotal,
+  freightBills,
+  nprTotal,
+  packingLists,
+} from "./documents";
+export type {
+  DocumentFilters,
+  FreightBill,
+  FreightBillCharge,
+  FreightBillStatus,
+  FreightBillWrite,
+  GeneratedFile,
+  PackingList,
+  PackingListItem,
+  PackingListStatus,
+  PackingListWrite,
+} from "./documents";
+
 export { carriers, claims, merchantKeys, notifications, webhooks } from "./integrations";
 export type {
   CarrierConfig,

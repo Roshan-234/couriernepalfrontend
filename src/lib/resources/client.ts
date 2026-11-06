@@ -136,3 +136,53 @@ export async function getPage<T>(path: string, query: Query = {}): Promise<Pagin
 export async function getList<T>(path: string, query: Query = {}): Promise<T[]> {
   return toPage<T>(await get<ListShape<T>>(path, query)).items;
 }
+
+/** A file the API streamed back, with the name it asked the browser to use. */
+export interface FetchedFile {
+  blob: Blob;
+  /** From `Content-Disposition`, or null when the header carried no name. */
+  fileName: string | null;
+}
+
+const FILENAME = /filename\*?=(?:UTF-8''|")?([^";]+)/i;
+
+function fileNameFrom(disposition: unknown): string | null {
+  if (typeof disposition !== "string") return null;
+  const match = FILENAME.exec(disposition);
+  if (!match) return null;
+  try {
+    return decodeURIComponent(match[1].trim());
+  } catch {
+    return match[1].trim();
+  }
+}
+
+/**
+ * GET a generated file.
+ *
+ * `responseType: "blob"` applies to the failure path too, so a 404 arrives as
+ * a Blob of JSON and `errorMessage` would report the generic fallback instead
+ * of what the API actually said. The body is read back and re-attached before
+ * the error is rethrown, which keeps every caller's error handling identical
+ * to the JSON endpoints'. The timeout is raised because the file is built on
+ * demand, not served from a cache.
+ */
+export async function getFile(path: string): Promise<FetchedFile> {
+  try {
+    const response = await api.get<Blob>(path, { responseType: "blob", timeout: 60_000 });
+    return {
+      blob: response.data,
+      fileName: fileNameFrom(response.headers["content-disposition"]),
+    };
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data instanceof Blob) {
+      const text = await error.response.data.text().catch(() => "");
+      try {
+        error.response.data = JSON.parse(text);
+      } catch {
+        error.response.data = { message: text.slice(0, 300) || undefined };
+      }
+    }
+    throw error;
+  }
+}
