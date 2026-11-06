@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { FaArrowRight, FaPlane, FaShip, FaFileAlt, FaSuitcaseRolling, FaBoxOpen, FaHouseUser, FaTruck } from 'react-icons/fa';
 import AdSlot from '@/components/ads/AdSlot';
+import { HomeReviews } from '@/components/reviews/HomeReviews';
 import { getPage, pageMetadata } from '@/lib/content';
 import { CORRIDORS } from '@/lib/seo/business';
 
@@ -250,6 +251,13 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/* ── What customers said ──────────────────────────────────────
+          Straight after the assurances, which is where a claim wants
+          somebody other than us backing it up. Renders nothing at all until
+          a review has been approved, so the assurances meet the domestic
+          block directly while the list is empty. */}
+      <HomeReviews />
 
       {/* ── Domestic, as the feeder network ──────────────────────────── */}
       <section className="section container">

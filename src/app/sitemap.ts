@@ -29,6 +29,7 @@ const STATIC_ROUTES: Array<[path: string, priority: number, freq: Entry['changeF
   ['/customs-guide', 0.6, 'monthly'],
   ['/packing-guide', 0.6, 'monthly'],
   ['/about', 0.5, 'monthly'],
+  ['/reviews', 0.5, 'weekly'],
   ['/blog', 0.6, 'daily'],
   ['/careers', 0.4, 'monthly'],
   ['/privacy', 0.3, 'yearly'],

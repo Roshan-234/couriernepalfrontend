@@ -264,4 +264,20 @@ export const queryKeys = {
     overdue: ["privacy", "overdue"] as const,
     retention: ["privacy", "retention"] as const,
   },
+
+  /**
+   * Reviews. Our own and Google's are separate keys because they are
+   * separate bodies of content with separate ratings — a single key would
+   * make it one careless refetch away from showing one as the other.
+   */
+  reviews: {
+    all: ["reviews"] as const,
+    list: (filters: Record<string, unknown> = {}) =>
+      ["reviews", "list", filters] as const,
+    /** Its own key: the star distribution is shown whatever the filters are. */
+    summary: ["reviews", "summary"] as const,
+    google: ["reviews", "google"] as const,
+    admin: (filters: Record<string, unknown> = {}) =>
+      ["reviews", "admin", filters] as const,
+  },
 } as const;

@@ -102,3 +102,22 @@ export type {
   ConsentState,
   ConsentStatus,
 } from "./consent";
+
+export { GOOGLE_ATTRIBUTION, GOOGLE_REFRESH_REASONS, googleReviews, reviews, reviewsAdmin } from "./reviews";
+export type {
+  AdminReview,
+  AdminReviewFilters,
+  AdminReviewPage,
+  GoogleFeed,
+  GooglePlace,
+  GoogleRefreshResult,
+  GoogleReview,
+  RatingDistribution,
+  Review,
+  ReviewFilters,
+  ReviewPage,
+  ReviewReceipt,
+  ReviewStatus,
+  ReviewSubmission,
+  ReviewSummary,
+} from "./reviews";

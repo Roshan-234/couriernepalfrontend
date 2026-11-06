@@ -95,6 +95,7 @@ const ADMIN_NAV: NavSection[] = [
     links: [
       { label: "Website analytics", href: "/admin/analytics" },
       { label: "Website content", href: "/admin/content" },
+      { label: "Customer reviews", href: "/admin/reviews" },
       { label: "Pricing rules", href: "/admin/pricing" },
       { label: "Settings", href: "/admin/settings" },
     ],
