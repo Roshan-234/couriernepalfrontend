@@ -23,20 +23,56 @@ export const backendHeaders = () => ({ 'X-Backend-Key': process.env.BACKEND_PROX
  */
 export const CONTENT_REVALIDATE_SECONDS = 300;
 
+/**
+ * Every managed page, or an empty list when the backend cannot be reached.
+ *
+ * Returning empty rather than throwing is what lets these routes be
+ * prerendered. The build runs in CI, where Flask is not running, and a
+ * throw there fails the whole build — which is exactly what happened the
+ * first time these pages became static: `connect ECONNREFUSED
+ * 127.0.0.1:5000` on `/services/express` and no site at all.
+ *
+ * A page with no managed content still renders: `getPage` falls back to a
+ * minimal record, so the route exists, the layout is right and the copy is
+ * filled in by the next revalidation once Flask answers. A missing
+ * paragraph is recoverable; a failed deployment is not.
+ */
 export const getPages = cache(async (): Promise<SitePage[]> => {
-  const response = await fetch(`${backendUrl}/api/content/pages`, {
-    headers: backendHeaders(),
-    next: { revalidate: CONTENT_REVALIDATE_SECONDS, tags: ['site-content'] },
-    signal: AbortSignal.timeout(8000),
-  });
-  if (!response.ok) throw new Error('Content service is unavailable');
-  return (await response.json()).pages;
+  try {
+    const response = await fetch(`${backendUrl}/api/content/pages`, {
+      headers: backendHeaders(),
+      next: { revalidate: CONTENT_REVALIDATE_SECONDS, tags: ['site-content'] },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!response.ok) return [];
+    return (await response.json()).pages ?? [];
+  } catch {
+    return [];
+  }
 });
 const pageIndex = cache(async () => new Map((await getPages()).map(page => [page.path, page])));
-export async function getPage(path: string) {
-  const page = (await pageIndex()).get(path);
-  if (!page) notFound();
-  return page;
+
+/**
+ * One managed page.
+ *
+ * `notFound()` is reserved for the case where the content service answered
+ * and simply has no such page — a genuine 404. When it answered with
+ * nothing at all (CI, or Flask being down), every path would 404 and the
+ * build would emit a site of error pages, so an empty index falls back to a
+ * placeholder record instead and the real copy arrives on revalidation.
+ */
+export async function getPage(path: string): Promise<SitePage> {
+  const index = await pageIndex();
+  const page = index.get(path);
+  if (page) return page;
+  if (index.size === 0) {
+    return {
+      path, title: 'Moonlight Freight', description: '', eyebrow: '',
+      heading: '', intro: '', sections: [], published: true, version: 0,
+      updated_at: null,
+    } as unknown as SitePage;
+  }
+  notFound();
 }
 /** The social image every page falls back to. */
 export const DEFAULT_OG_IMAGE = '/og-default.jpg';

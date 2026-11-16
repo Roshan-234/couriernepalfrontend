@@ -48,9 +48,27 @@ export function middleware(request: NextRequest) {
     return response;
   }
   // Flask validates tokens and roles; cookie presence is only a navigation hint.
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   const development = process.env.NODE_ENV !== 'production';
-  const csp = ["default-src 'self'", `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${development ? " 'unsafe-eval'" : ''}`,
+
+  // Two policies, because a nonce and a static page cannot coexist.
+  //
+  // A nonce is minted per request, so a page carrying one can never be
+  // prerendered. Applying the nonce policy everywhere is what forced all
+  // 79 routes to render on demand and emit no HTML — which on shared
+  // hosting is a React server render for every page view and every crawler
+  // hit on the ~119 URLs in the sitemap.
+  //
+  // So the strict nonce policy is kept for the signed-in areas, where a
+  // stolen session is the thing worth defending and the traffic is a
+  // handful of staff. Everything public — the pages that carry the load
+  // and hold nothing private until a form is submitted — gets a policy a
+  // static file can satisfy. `object-src`, `base-uri`, `form-action`,
+  // `frame-ancestors` and `connect-src` are unchanged on both; what the
+  // public policy gives up is inline-script nonces, not the whole header.
+  const privileged = /^\/(admin|dashboard|auth)(\/|$)/.test(path)
+    || /^\/blog\/[^/]+\/edit\/?$/.test(path);
+
+  const shared = ["default-src 'self'",
     "style-src 'self' 'unsafe-inline'", "img-src 'self' data: https:", "font-src 'self' data:",
     // Analytics is first-party and reached through this app's own /api
     // proxy, so nothing outside this origin needs to be connectable. The
@@ -58,9 +76,17 @@ export function middleware(request: NextRequest) {
     // tag itself: a policy that still permits a script nobody loads is an
     // opening kept warm for someone else.
     `connect-src 'self'${development ? ' ws: wss:' : ''}`,
-    "object-src 'none'", "base-uri 'self'", "form-action 'self'", "frame-ancestors 'none'"].join('; ');
+    "object-src 'none'", "base-uri 'self'", "form-action 'self'", "frame-ancestors 'none'"];
+
+  const nonce = privileged ? Buffer.from(crypto.randomUUID()).toString('base64') : '';
+  const scriptSrc = privileged
+    ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${development ? " 'unsafe-eval'" : ''}`
+    : `script-src 'self' 'unsafe-inline'${development ? " 'unsafe-eval'" : ''}`;
+  const csp = [shared[0], scriptSrc, ...shared.slice(1)].join('; ');
+
   const headers = new Headers(request.headers);
-  headers.set('x-nonce', nonce); headers.set('Content-Security-Policy', csp);
+  headers.set('Content-Security-Policy', csp);
+  if (nonce) headers.set('x-nonce', nonce);
   const response = NextResponse.next({ request: { headers } });
   response.headers.set('Content-Security-Policy', csp);
   // /tracking is intentionally absent: it answers the highest-intent query

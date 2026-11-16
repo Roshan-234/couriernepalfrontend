@@ -47,14 +47,68 @@ test('the API proxy replaces an incoming backend key with its own server setting
   assert.equal(response.headers.get('x-middleware-request-x-backend-key'), 'test-only-server-key');
 });
 
-test('public HTML gets a distinct nonce and disallows eval in production', () => {
+// A nonce is minted per request, so a page that carries one can never be
+// prerendered. Applying the nonce policy everywhere is what forced all 79
+// routes to render on demand and emit no HTML, which on shared hosting is
+// a React server render for every page view. The policy is now split, and
+// these tests pin both halves of that split.
+
+test('the signed-in areas keep a distinct nonce and disallow eval', () => {
   const run = middleware();
-  const first = run(new NextRequest('https://couriernepal.com/'));
-  const second = run(new NextRequest('https://couriernepal.com/'));
+  const first = run(new NextRequest('https://couriernepal.com/auth/login'));
+  const second = run(new NextRequest('https://couriernepal.com/auth/login'));
   const policy = first.headers.get('Content-Security-Policy');
   assert.match(policy, /'nonce-[^']+'/);
+  assert.match(policy, /'strict-dynamic'/);
   assert.doesNotMatch(policy, /unsafe-eval/);
+  assert.doesNotMatch(policy, /script-src[^;]*unsafe-inline/);
+  // A fresh nonce per request, or it is not a nonce.
   assert.notEqual(policy, second.headers.get('Content-Security-Policy'));
+});
+
+test('public pages get a policy a static file can satisfy', () => {
+  const run = middleware();
+  const policy = run(new NextRequest('https://couriernepal.com/pricing'))
+    .headers.get('Content-Security-Policy');
+  assert.doesNotMatch(policy, /'nonce-/);
+  assert.match(policy, /script-src 'self' 'unsafe-inline'/);
+  assert.doesNotMatch(policy, /unsafe-eval/);
+});
+
+test('the protections that do not depend on a nonce are on both policies', () => {
+  // What the public policy gives up is inline-script nonces, not the header.
+  const run = middleware();
+  for (const path of ['/pricing', '/auth/login']) {
+    const policy = run(new NextRequest(`https://couriernepal.com${path}`))
+      .headers.get('Content-Security-Policy');
+    for (const directive of ["object-src 'none'", "base-uri 'self'",
+                             "form-action 'self'", "frame-ancestors 'none'",
+                             "default-src 'self'", "connect-src 'self'"]) {
+      assert.ok(policy.includes(directive), `${path} is missing ${directive}`);
+    }
+  }
+});
+
+test('every privileged path that renders is on the strict policy', () => {
+  // A signed-out visitor to /admin is redirected, and a redirect carries no
+  // HTML to protect, so it carries no policy either. Only the responses
+  // that actually render a document are asserted on.
+  const run = middleware();
+  let checked = 0;
+  for (const path of ['/admin', '/admin/reviews', '/dashboard',
+                      '/dashboard/shipments', '/auth/login',
+                      '/blog/a-post/edit']) {
+    const response = run(new NextRequest(`https://couriernepal.com${path}`));
+    const policy = response.headers.get('Content-Security-Policy');
+    if (policy === null) {
+      assert.ok(response.headers.get('location'),
+        `${path} returned no policy and is not a redirect`);
+      continue;
+    }
+    assert.match(policy, /'nonce-[^']+'/, `${path} should carry a nonce`);
+    checked += 1;
+  }
+  assert.ok(checked > 0, 'no privileged path actually rendered');
 });
 
 test('the API proxy forwards the visitor address and overwrites a forged one', () => {
